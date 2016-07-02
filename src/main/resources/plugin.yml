@@ -5,3 +5,11 @@ authors: [Akoot]
 website: https://github.com/ReneHollander/empty-spigot-plugin
 
 main: com.Akoot.daemons.Daemons
+
+commands:
+    Test:
+        description: Test command.
+        aliases: [tst]
+    Chat:
+        description: Chat command.
+        aliases: [chatroom]

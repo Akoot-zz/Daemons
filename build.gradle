@@ -36,6 +36,7 @@ idea {
 repositories {
     mavenLocal()
     mavenCentral()
+    maven { url "http://repo.stealthyone.com/content/groups/public" }
 }
 
 group = project.property("group")
@@ -53,6 +54,7 @@ dependencies {
   // dependencies go here
   // Example:
   // compile group: 'com.google.guava', name: 'guava', version: '18.0'
+  compile "mkremins:fanciful:0.3.5-SNAPSHOT"
 }
 
 processResources {
