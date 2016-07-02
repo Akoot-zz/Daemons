@@ -3,23 +3,21 @@ package com.Akoot.daemons;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.Akoot.daemons.chat.ChatRoom;
 import com.Akoot.daemons.chat.Chats.ChatType;
 import com.Akoot.daemons.commands.Commands;
 import com.Akoot.daemons.events.EventListener;
-import com.Akoot.daemons.scoreboard.ChatScoreboard;
 
 public class Daemons extends JavaPlugin
 {   
 	private Commands commands;
 	private EventListener eventHandler;
-	private ChatScoreboard chatScoreboard;
-	public List<User> onlineUsers;
-	public List<User> offlineUsers;
 	private static Daemons instance;
 	public List<ChatRoom> chatrooms;
+	private List<User> onlineUsers;
 
 	@Override
 	public void onEnable()
@@ -27,10 +25,8 @@ public class Daemons extends JavaPlugin
 		instance = this;
 		commands = new Commands(instance);
 		eventHandler = new EventListener(instance);
-		chatScoreboard = new ChatScoreboard();
-		onlineUsers = new ArrayList<User>();
-		offlineUsers = new ArrayList<User>();
 		chatrooms = new ArrayList<ChatRoom>();
+		onlineUsers = new ArrayList<User>();
 		registerChatRooms();
 	}
 
@@ -41,7 +37,7 @@ public class Daemons extends JavaPlugin
 
 	private void registerChatRooms()
 	{
-		chatrooms.add(new ChatRoom(ChatType.GLOBAL, "Global"));
+		chatrooms.add(new ChatRoom(ChatType.PUBLIC, "Global"));
 		chatrooms.add(new ChatRoom(ChatType.PARTY, "Help"));
 	}
 
@@ -53,13 +49,8 @@ public class Daemons extends JavaPlugin
 	public ChatRoom getChatRoom(String search)
 	{
 		for(ChatRoom chatroom: chatrooms)
-		if(chatroom.getName().toLowerCase().contains(search.toLowerCase())) return chatroom;
+			if(chatroom.getName().toLowerCase().contains(search.toLowerCase())) return chatroom;
 		return null;
-	}
-
-	public ChatScoreboard getChatScoreboard()
-	{
-		return chatScoreboard;
 	}
 
 	public EventListener getEventHandler()
@@ -72,7 +63,19 @@ public class Daemons extends JavaPlugin
 		return instance;
 	}
 
-	public User getOnlineUser(String search)
+	public User getUser(Player player)
+	{
+		for(User user: onlineUsers)
+		{
+			if(user.getPlayer() == player)
+			{
+				return user;
+			}
+		}
+		return null;
+	}
+
+	public User getUser(String search)
 	{
 		for(User user: onlineUsers)
 		{
@@ -84,6 +87,11 @@ public class Daemons extends JavaPlugin
 			}
 		}
 		return null;
+	}
+
+	public List<User> getOnlineUsers()
+	{
+		return onlineUsers;
 	}
 
 	@Override

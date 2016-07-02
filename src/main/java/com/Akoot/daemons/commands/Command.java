@@ -72,6 +72,14 @@ public class Command
 	protected void sendUsage(String msg)
 	{
 	}
+	
+	public void sendCommand(String msg, String hover, String command)
+	{
+		message = new FancyMessage(msg);
+		message.tooltip(hover)
+		.command(command)
+		.send(sender);
+	}
 
 	public String getName()
 	{

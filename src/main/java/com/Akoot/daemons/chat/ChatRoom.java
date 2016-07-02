@@ -11,17 +11,45 @@ public class ChatRoom
 	private String displayname;
 	public ChatType type;
 	private List<User> users;
+	private List<User> moderators;
+	private User owner;
 	
 	public ChatRoom(ChatType type, String displayname)
 	{
 		this.displayname = displayname;
 		this.type = type;
 		this.users = new ArrayList<User>();
+		this.moderators = new ArrayList<User>();
 	}
 	
 	public String getName()
 	{
 		return displayname;
+	}
+	
+	public User getOwner()
+	{
+		return owner;
+	}
+	
+	public void setOwner(User user)
+	{
+		this.owner = user;
+	}
+	
+	public List<User> getModerators()
+	{
+		return moderators;
+	}
+	
+	public void addModerator(User user)
+	{
+		this.moderators.add(user);
+	}
+	
+	public void demote(User user)
+	{
+		this.moderators.remove(user);
 	}
 	
 	public List<User> getUsers()
@@ -31,11 +59,16 @@ public class ChatRoom
 	
 	public void add(User user)
 	{
-		this.users.add(user);
+		if(!this.users.contains(user)) this.users.add(user);
 	}
 	
 	public void remove(User user)
 	{
 		this.users.remove(user);
+	}
+	
+	public boolean hasUser(User user)
+	{
+		return this.users.contains(user);
 	}
 }

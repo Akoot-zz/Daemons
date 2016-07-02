@@ -2,7 +2,6 @@ package com.Akoot.daemons.commands;
 
 import org.bukkit.ChatColor;
 
-import com.Akoot.daemons.User;
 import com.Akoot.daemons.chat.ChatRoom;
 
 public class CommandChat extends Command
@@ -18,35 +17,27 @@ public class CommandChat extends Command
 	{
 		if(args.length == 0)
 		{
-			sendMessage("Current Chatroom: " + user.getChatroom().getName());
+			sendMessage("[Current Chatroom]", ChatColor.LIGHT_PURPLE + "This is already displayed in the scoreboard.");
+			listUsers(user.getChatroom());
 		}
 		else if(args.length == 1)
 		{
-			if(args[0].equalsIgnoreCase("rooms"))
+			if(args[0].equalsIgnoreCase("rooms") || args[0].equalsIgnoreCase("list"))
 			{
 				sendMessage("[Open Chatrooms]");
-				for(ChatRoom room: plugin.chatrooms)
-				{
-					sendMessage(ChatColor.GREEN + room.getName() + ":");
-					sendMessage(ChatColor.DARK_GREEN + "  Users:");
-					for(User u: room.getUsers())
-					{
-						if(room.getUsers().indexOf(u) >= 10)
-						{
-							sendMessage("and " + (room.getUsers().size() - 10) + " more...");
-							break;
-						}
-						sendMessage(ChatColor.WHITE + "    " + u.getPlayer().getName());
-					}
-				}
+				for(ChatRoom room: plugin.chatrooms) listUsers(room);
 				return;
 			}
 
 			ChatRoom room = user.getChatroom();
 			if((room = plugin.getChatRoom(args[0])) != null)
 			{
-				user.setChatroom(room);
-				sender.sendMessage("Switched to " + room.getName());
+				if(room != user.getChatroom())
+				{
+					user.setChatroom(room);
+					sendMessage("Switched to " + room.getName());
+				}
+				else sendMessage("You are already in that room!");
 			}
 			else sendError("Chatroom " + args[0] + " does not exist.");
 		}
@@ -54,5 +45,13 @@ public class CommandChat extends Command
 		{
 			sendUsage();
 		}
+	}
+
+	public void listUsers(ChatRoom room)
+	{
+		String users = "";
+		for(int i = 0; i < (room.getUsers().size() < 10 ? room.getUsers().size() : 10); i++) users += "  " + room.getUsers().get(i).getPlayer().getDisplayName() + "\n";
+		if(room.getUsers().size() > 10) users += "and " + (room.getUsers().size() - 10) + " more...";
+		sendCommand(ChatColor.GREEN + room.getName(), ChatColor.GREEN + (room.getUsers().size() > 0 ? "Users:\n  " + ChatColor.WHITE + users.trim() : "<Empty>"), "/chat " + room.getName());
 	}
 }

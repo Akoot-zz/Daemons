@@ -7,8 +7,9 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-import com.Akoot.daemons.User;
 import com.Akoot.daemons.Daemons;
+import com.Akoot.daemons.User;
+import com.Akoot.daemons.chat.Chats.ChatType;
 
 public class EventListener implements Listener
 {
@@ -19,38 +20,48 @@ public class EventListener implements Listener
 		plugin = instance;
 		plugin.getServer().getPluginManager().registerEvents(this, plugin);
 	}
-	
+
 	@EventHandler
 	public void onPlayerChat(AsyncPlayerChatEvent event)
 	{
 		event.setCancelled(true);
 		String message = event.getMessage();
 		Player player = event.getPlayer();
-		plugin.getServer().broadcastMessage(player.getName() + ": " + message);
-		
-		/* Scoreboard */
-		plugin.getChatScoreboard().update();
+		String msg = event.getFormat().replace("%1$s", player.getDisplayName()).replace("%2$s", message);
+		User user = plugin.getUser(player);
+		if(user.getChatroom().type != ChatType.PUBLIC)
+		{
+			for(Player recipent: event.getRecipients())
+			{
+				if(recipent.isOp() && recipent != player)
+				{
+					recipent.sendMessage("[" + user.getChatroom().getName() + "]" + msg);
+				}
+				else
+				{
+					if(user.getChatroom() == plugin.getUser(recipent).getChatroom())
+						recipent.sendMessage(msg);
+				}
+			}
+		}
+		System.out.println("[" + user.getChatroom().getName() + "]" + msg);
 	}
-	
+
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent event)
 	{
 		Player player = event.getPlayer();
+		plugin.getOnlineUsers().add(new User(player));
 		
-		plugin.onlineUsers.add(new User(player));
-		for(User user: plugin.offlineUsers) if(user.getPlayer() == player) plugin.offlineUsers.remove(user);
-		
-		/* Scoreboard */
-		plugin.getChatScoreboard().update();
-		player.setScoreboard(plugin.getChatScoreboard().getBoard());
+		plugin.getUser(player).setBoard();
 	}
-	
+
 	@EventHandler
 	public void onPlayerLeave(PlayerQuitEvent event)
 	{
-		Player player = event.getPlayer();
+		User user = plugin.getUser(event.getPlayer());
 		
-		plugin.offlineUsers.add(new User(player));
-		for(User user: plugin.onlineUsers) if(user.getPlayer() == player) plugin.onlineUsers.remove(user);
+		user.getChatroom().remove(user);
+		plugin.getOnlineUsers().remove(user);
 	}
 }

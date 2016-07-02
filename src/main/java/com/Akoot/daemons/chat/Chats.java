@@ -4,7 +4,7 @@ public class Chats
 {
 	public enum ChatType
 	{
-		GLOBAL,
+		PUBLIC,
 		PARTY,
 		PRIVATE
 	}

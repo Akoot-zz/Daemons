@@ -55,7 +55,7 @@ public class Commands implements CommandExecutor
 				if(sender instanceof Player)
 				{
 					Player player = (Player) sender;
-					command.user = plugin.getOnlineUser(player.getUniqueId().toString());
+					command.user = plugin.getUser(player);
 					if(!command.permission.isEmpty())
 					{
 						if(!player.hasPermission(command.permission))
