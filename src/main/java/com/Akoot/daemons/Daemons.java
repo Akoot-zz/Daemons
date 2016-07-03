@@ -2,7 +2,10 @@ package com.Akoot.daemons;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -18,11 +21,13 @@ public class Daemons extends JavaPlugin
 	private static Daemons instance;
 	public List<ChatRoom> chatrooms;
 	private List<User> onlineUsers;
+	private Logger log;
 
 	@Override
 	public void onEnable()
 	{
 		instance = this;
+		log = Bukkit.getLogger();
 		commands = new Commands(instance);
 		eventHandler = new EventListener(instance);
 		chatrooms = new ArrayList<ChatRoom>();
@@ -34,11 +39,21 @@ public class Daemons extends JavaPlugin
 	{
 		return commands;
 	}
+	
+	public void log(String msg)
+	{
+		log.log(Level.INFO, msg);
+	}
+	
+	public void earn(String msg)
+	{
+		log.log(Level.WARNING, msg);
+	}
 
 	private void registerChatRooms()
 	{
-		chatrooms.add(new ChatRoom(ChatType.PUBLIC, "Global"));
-		chatrooms.add(new ChatRoom(ChatType.PARTY, "Help"));
+		chatrooms.add(new ChatRoom(ChatType.PUBLIC, "Global", true));
+		chatrooms.add(new ChatRoom(ChatType.PARTY, "Help", true));
 	}
 
 	public void registerChatRoom(ChatRoom chatroom)

@@ -13,13 +13,25 @@ public class ChatRoom
 	private List<User> users;
 	private List<User> moderators;
 	private User owner;
+	private boolean receiveGlobal;
 	
-	public ChatRoom(ChatType type, String displayname)
+	public ChatRoom(ChatType type, String displayname, boolean receiveGlobal)
 	{
 		this.displayname = displayname;
 		this.type = type;
 		this.users = new ArrayList<User>();
 		this.moderators = new ArrayList<User>();
+		this.receiveGlobal = receiveGlobal;
+	}
+	
+	public void receiveGlobal(boolean receive)
+	{
+		this.receiveGlobal = receive;
+	}
+	
+	public boolean receivesGlobalChat()
+	{
+		return receiveGlobal;
 	}
 	
 	public String getName()

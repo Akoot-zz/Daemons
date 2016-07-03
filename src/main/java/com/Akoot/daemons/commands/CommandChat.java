@@ -41,6 +41,19 @@ public class CommandChat extends Command
 			}
 			else sendError("Chatroom " + args[0] + " does not exist.");
 		}
+		else if(args.length == 2)
+		{
+			String name = args[1];
+			if(args[0].equalsIgnoreCase("create"))
+			{
+				if(user.getChatroom().getOwner().equals(user))
+				{
+					sendMessage("Disband " + user.getChatroom().getName() + " and create " + name + "?");
+					sendCommand("Yes", "Click to disband " + user.getChatroom().getName() + ".", "/chat disband");
+					sendCommand("No", "Click to disband " + user.getChatroom().getName() + ".", "/chat disband");
+				}
+			}
+		}
 		else
 		{
 			sendUsage();
