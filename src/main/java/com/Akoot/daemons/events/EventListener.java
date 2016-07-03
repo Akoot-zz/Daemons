@@ -23,14 +23,20 @@ public class EventListener implements Listener
 		plugin = instance;
 		plugin.getServer().getPluginManager().registerEvents(this, plugin);
 	}
+	
+	public String roleColor()
+	{
+		return "";
+	}
 
-	public FancyMessage formattedMessage(Player player, String message)
+	public FancyMessage formattedMessage(Player player, String message, Player recipent)
 	{
 		String name = player.getDisplayName();
 		String fRole = "**";
-		String fRoleColor = "§a";
+		String fRoleColor = ChatColor.GREEN + "";
 		String fName = "416";
-		String group = "§aLoyalist";
+		String group = ChatColor.GREEN + "Loyalist";
+		
 		return new FancyMessage("")
 				.then(fRoleColor + fRole + fName)
 					.tooltip(ChatColor.DARK_GREEN + "Click to show the faction...")
@@ -51,12 +57,10 @@ public class EventListener implements Listener
 	public void onPlayerChat(AsyncPlayerChatEvent event)
 	{
 		event.setCancelled(true);
-		FancyMessage message = formattedMessage(event.getPlayer(), event.getMessage());
 		Player player = event.getPlayer();
 		User user = plugin.getUser(player);
 
 		plugin.log("[" + player.getName() + ":" + user.getChatroom().getName() + "] " + event.getMessage());
-		message.send(player);
 
 		if(user.getChatroom().type != ChatType.PUBLIC)
 		{
@@ -66,9 +70,11 @@ public class EventListener implements Listener
 				{
 					if(!user.getChatroom().hasUser(plugin.getUser(recipent))) return;
 				}
-				message.send(recipent);
+				formattedMessage(player, event.getMessage(), recipent).send(recipent);
 			}
+			return;
 		}
+		for(Player recipent: event.getRecipients()) formattedMessage(player, event.getMessage(), recipent).send(recipent);
 	}
 
 	@EventHandler

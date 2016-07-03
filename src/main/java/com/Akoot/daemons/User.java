@@ -1,5 +1,7 @@
 package com.Akoot.daemons;
 
+import java.util.UUID;
+
 import org.bukkit.entity.Player;
 
 import com.Akoot.daemons.chat.ChatRoom;
@@ -42,10 +44,39 @@ public class User
 	
 	public void setChatroom(ChatRoom room)
 	{
-		if(this.chatroom != null) this.chatroom.remove(this);
 		this.chatroom = room;
 		this.chatroom.add(this);
 		this.chatboard.update();
+	}
+	
+	public boolean ownsChatroom()
+	{
+		return this.chatroom.getOwner() == this;
+	}
+	
+	public boolean moderatesChatroom()
+	{
+		return this.chatroom.getModerators().contains(this) || ownsChatroom();
+	}
+	
+	public void sendMessage(String message)
+	{
+		player.sendMessage(message);
+	}
+	
+	public String getName()
+	{
+		return player.getName();
+	}
+	
+	public String getDisplayName()
+	{
+		return player.getDisplayName();
+	}
+	
+	public UUID getUUID()
+	{
+		return player.getUniqueId();
 	}
 	
 	public boolean equals(User user)

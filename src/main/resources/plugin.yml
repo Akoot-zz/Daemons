@@ -13,3 +13,6 @@ commands:
     Chat:
         description: Chat command.
         aliases: [chatroom]
+    Nick:
+        description: Set nickname.
+        aliases: [nickname, nic]

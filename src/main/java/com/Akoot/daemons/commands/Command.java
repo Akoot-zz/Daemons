@@ -2,6 +2,7 @@ package com.Akoot.daemons.commands;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import com.Akoot.daemons.Daemons;
 import com.Akoot.daemons.User;
@@ -19,7 +20,7 @@ public class Command
 	FancyMessage message = new FancyMessage();
 	protected User user;
 
-	public String[] args;
+	protected String[] args;
 
 	protected Command(){}
 
@@ -41,7 +42,7 @@ public class Command
 
 	protected void sendError(String error)
 	{
-		sendMessage("&4Error: &c" + error);
+		sendMessage(ChatColor.DARK_RED + "Error: " + ChatColor.RED + error);
 	}
 
 	protected void noPermission()
@@ -73,15 +74,30 @@ public class Command
 	{
 	}
 	
-	public void sendCommand(String msg, String hover, String command)
+	protected void sendCommand(String msg, String hover, String command)
 	{
 		message = new FancyMessage(msg);
 		message.tooltip(hover)
 		.command(command)
 		.send(sender);
 	}
-
-	public String getName()
+	
+	protected boolean hasArgs()
+	{
+		return args.length > 0;
+	}
+	
+	protected void sendPlayerOnly()
+	{
+		sender.sendMessage("Sorry, " + name + " can only be used by players.");
+	}
+	
+	protected boolean isPlayer()
+	{
+		return (sender instanceof Player);
+	}
+	
+	protected String getName()
 	{
 		return name;
 	}

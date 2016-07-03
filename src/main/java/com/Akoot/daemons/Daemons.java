@@ -22,6 +22,9 @@ public class Daemons extends JavaPlugin
 	public List<ChatRoom> chatrooms;
 	private List<User> onlineUsers;
 	private Logger log;
+	
+	public ChatRoom globalChatroom;
+	public ChatRoom helpChatroom;
 
 	@Override
 	public void onEnable()
@@ -52,13 +55,18 @@ public class Daemons extends JavaPlugin
 
 	private void registerChatRooms()
 	{
-		chatrooms.add(new ChatRoom(ChatType.PUBLIC, "Global", true));
-		chatrooms.add(new ChatRoom(ChatType.PARTY, "Help", true));
+		chatrooms.add(globalChatroom = new ChatRoom(ChatType.PUBLIC, "Global", true));
+		chatrooms.add(helpChatroom = new ChatRoom(ChatType.PARTY, "Help", true));
 	}
 
 	public void registerChatRoom(ChatRoom chatroom)
 	{
 		chatrooms.add(chatroom);
+	}
+	
+	public void unregisterChatRoom(ChatRoom chatroom)
+	{
+		if(chatrooms.contains(chatroom)) chatrooms.remove(chatroom);
 	}
 
 	public ChatRoom getChatRoom(String search)

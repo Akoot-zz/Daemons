@@ -28,6 +28,7 @@ public class Commands implements CommandExecutor
 	{
 		commands.add(new CommandTest());
 		commands.add(new CommandChat());
+		commands.add(new CommandNick());
 		
 		for(Command cmd: commands)
 		{
@@ -38,12 +39,6 @@ public class Commands implements CommandExecutor
 	@Override
 	public boolean onCommand(CommandSender sender, org.bukkit.command.Command cmd, String alias, String[] args)
 	{
-		if(sender instanceof Player)
-		{
-			//Player player = (Player)sender;
-			//plugin.commandLog.addLine("[" + ChatUtil.getCurrentTime() + "] " + player.getName() + ": " + cmd.getName() + " /" + ChatUtil.toString(args));
-		}
-
 		for(Command command: commands)
 		{
 			if(cmd.getName().equalsIgnoreCase(command.name))
@@ -69,7 +64,7 @@ public class Commands implements CommandExecutor
 				{
 					if(command.playerOnly)
 					{
-						command.sendMessage("Sorry, /" + command.name + " can only be used by players");
+						command.sendPlayerOnly();
 						return false;
 					}
 					BlockCommandSender block  = (BlockCommandSender) sender;
@@ -79,7 +74,7 @@ public class Commands implements CommandExecutor
 				{
 					if(command.playerOnly)
 					{
-						command.sendMessage("Sorry, /" + command.name + " can only be used by players");
+						command.sendPlayerOnly();
 						return false;
 					}
 				}
