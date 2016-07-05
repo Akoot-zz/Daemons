@@ -176,9 +176,12 @@ public class CommandChat extends Command
 				for(int i = 0; i < args.length; i++)
 				{
 					if(args[i].equalsIgnoreCase("-private")) room.type = ChatType.PRIVATE;
+					if(args[i].equalsIgnoreCase("-public")) room.type = ChatType.PUBLIC;
+					if(args[i].equalsIgnoreCase("-party")) room.type = ChatType.PARTY;
 					if(i + 1 < args.length)
 					{
 						if(args[i].equalsIgnoreCase("-pass")) room.setPassword(args[i + 1]);
+						if(args[i].equalsIgnoreCase("-type")) room.type = ChatType.valueOf(args[i + 1]);
 					}
 				}
 			}
@@ -188,7 +191,7 @@ public class CommandChat extends Command
 				User u;
 				for(int i = 0; i < args.length; i++)
 				{
-					if((u = plugin.getUser(args[i])) != null) user.getChatroom().add(u);
+					if((u = plugin.getUser(args[i])) != null) user.getChatroom().remove(u);
 				}
 			}
 			else if(args[0].equalsIgnoreCase("invite"))

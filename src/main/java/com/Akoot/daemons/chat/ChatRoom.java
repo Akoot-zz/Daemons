@@ -114,6 +114,11 @@ public class ChatRoom
 	{
 		return this.users.contains(user);
 	}
+	
+	public void rename(String newName)
+	{
+		this.displayname = newName;
+	}
 
 	public void removeModerator(User u)
 	{

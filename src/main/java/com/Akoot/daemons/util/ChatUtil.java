@@ -175,9 +175,41 @@ public class ChatUtil
 		return arr;
 	}
 
+	public String getArgFor(String arg, String[] args)
+	{
+		for(int i = 0; i < args.length; i++)
+		{
+			String result = args[i];
+			if(i < args.length)
+			{
+				result = args[i + 1];
+				if(result.startsWith("\""))
+				{
+					int k = i + 2;
+					for(int j = i + 2; j < args.length; j++)
+					{
+						if(args[j].endsWith("\""))
+						{
+							k = j;
+							break;
+						}
+					}
+					result = toString(substr(args, i + 1, k));
+				}
+				return result;
+			}
+		}
+		return "";
+	}
+
 	public static String[] removeFirst(String[] a)
 	{
 		return Arrays.copyOfRange(a, 1, a.length);
+	}
+
+	public static String[] substr(String[] a, int startIndex, int endIndex)
+	{
+		return Arrays.copyOfRange(a, startIndex, endIndex);
 	}
 
 	public static String[] substr(String[] a, int startIndex)
