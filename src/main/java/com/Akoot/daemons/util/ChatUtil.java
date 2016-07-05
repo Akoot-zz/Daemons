@@ -1,6 +1,7 @@
 package com.Akoot.daemons.util;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -74,6 +75,20 @@ public class ChatUtil
 		return item.getType().name().toLowerCase().replace("_", " ");
 	}
 
+	public static String toProperString(String[] args)
+	{
+		String m = args[0];
+		if(args.length > 1)
+		{
+			m = "";
+			for(int i = 0; i < args.length; i++)
+			{
+				if(i < args.length - 1) m += args[i] + ", ";
+				else m += "and " + args[i];
+			}
+		}
+		return m.trim();
+	}
 
 	public static String getTime(int time)
 	{
@@ -147,5 +162,26 @@ public class ChatUtil
 		}
 		msg = msg.trim();
 		return msg;
+	}
+
+	public static String[] replace(String[] a, int index, String replace)
+	{
+		String[] arr = new String[a.length];
+		for(int i = 0; i < a.length; i++)
+		{
+			if(i == index) arr[i] = replace;
+			else arr[i] = a[i];
+		}
+		return arr;
+	}
+
+	public static String[] removeFirst(String[] a)
+	{
+		return Arrays.copyOfRange(a, 1, a.length);
+	}
+
+	public static String[] substr(String[] a, int startIndex)
+	{
+		return Arrays.copyOfRange(a, startIndex, a.length);
 	}
 }

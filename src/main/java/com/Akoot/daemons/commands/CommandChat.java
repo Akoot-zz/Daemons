@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 import com.Akoot.daemons.User;
 import com.Akoot.daemons.chat.ChatRoom;
 import com.Akoot.daemons.chat.Chats.ChatType;
+import com.Akoot.daemons.util.ChatUtil;
 
 import mkremins.fanciful.FancyMessage;
 
@@ -15,6 +16,94 @@ public class CommandChat extends Command
 	{
 		this.name = "Chat";
 		this.color = ChatColor.GOLD;
+	}
+
+	public void join(ChatRoom room)
+	{
+		if(room != user.getChatroom())
+		{
+			if(!user.ownsChatroom())
+			{
+				user.getChatroom().getUsers().remove(this);
+				user.setChatroom(room);
+				sendMessage("You joined " + room.getName());
+			}
+			else sendDisbandMessage("and join " + room.getName(), "-join", room.getName());
+		}
+		else sendMessage("You are already in that room!");
+	}
+
+	public void disband(String... disbandArgs)
+	{
+		String roomName = user.getChatroom().getName();
+		user.getChatroom().disband();
+		sendMessage("Successfully disbanded " + roomName + ". RIP");
+		for(int i = 0; i < disbandArgs.length; i++)
+		{
+			if(i + 1 < disbandArgs.length)
+			{
+				if(disbandArgs[i].equalsIgnoreCase("-join")) user.getPlayer().chat("/chat " + disbandArgs[i + 1]);
+				if(disbandArgs[i].equalsIgnoreCase("-create")) user.getPlayer().chat("/chat create" + disbandArgs[i + 1]);
+			}
+		}
+	}
+
+	public void create(String name, String... createArgs)
+	{
+		ChatType type = ChatType.PRIVATE;
+		boolean receiveGlobal = false;
+		String[] mods = null;
+		String password = "";
+
+		for(int i = 0; i < createArgs.length; i++)
+		{
+			if(createArgs[i].equalsIgnoreCase("-global")) receiveGlobal = true;
+			if(i + 1 < createArgs.length)
+			{
+				if(createArgs[i].equalsIgnoreCase("-type")) type = ChatType.valueOf(createArgs[i + 1].toUpperCase());
+				if(createArgs[i].equalsIgnoreCase("-mods")) mods = createArgs[i + 1].split(",");
+				if(createArgs[i].equalsIgnoreCase("-pass")) password = createArgs[i + 1];
+			}
+		}
+
+		ChatRoom room = new ChatRoom(type, name, receiveGlobal);
+		if(!password.isEmpty()) room.setPassword(password);
+		if(mods != null)
+		{
+			for(String mod: mods)
+			{
+				User u;
+				if((u = plugin.getUser(mod)) != null)
+				{
+					room.addModerator(u);
+				}
+				else sendPlayerNull(mod);
+			}
+		}
+		plugin.registerChatRoom(room);
+		sendMessage("Created " + room.type + " chatroom \"" + room.getName() + "\"!");
+		if(isPlayer())
+		{
+			join(room);
+			room.setOwner(user);
+		}
+	}
+
+	public void leave()
+	{
+		if(user.ownsChatroom()) sendDisbandMessage("");
+		else
+		{
+			user.getChatroom().remove(user);
+			sendMessage("You have left the chatroom.");
+		}
+	}
+
+	public void sendDisbandMessage(String message, String... disbandArgs)
+	{
+		String s = message.isEmpty() ? "" : " ";
+		sendMessage("Are you sure you want to disband your chatroom" + s + message + s + "?");
+		sendConfirmMessage("/chat disband -y" + (disbandArgs != null ? " " + ChatUtil.toString(disbandArgs) : ""));
 	}
 
 	@Override
@@ -30,25 +119,12 @@ public class CommandChat extends Command
 			if(args[0].equalsIgnoreCase("rooms") || args[0].equalsIgnoreCase("list"))
 			{
 				sendMessage("[Open Chatrooms]");
-				for(ChatRoom room: plugin.chatrooms) showInfo(room);
+				for(ChatRoom room: plugin.chatrooms) if(room.type != ChatType.PRIVATE) showInfo(room);
 				return;
 			}
 			else if(args[0].equalsIgnoreCase("leave"))
 			{
-				if(isPlayer())
-				{
-					if(user.ownsChatroom())
-					{
-						sendMessage("Disband " + user.getChatroom().getName() + "?");
-						sendCommand("Yes", "Click to disband " + user.getChatroom().getName() + ".", "/chat disband -y");
-						sendCommand("No", "Click to NOT disband " + user.getChatroom().getName() + ".", "/chat disband -n");
-					}
-					else
-					{
-						user.getChatroom().remove(user);
-						sendMessage("You have left the chatroom.");
-					}
-				}
+				if(isPlayer()) leave();
 				else sendPlayerOnly();
 			}
 			else if(args[0].equalsIgnoreCase("disband"))
@@ -57,9 +133,7 @@ public class CommandChat extends Command
 				{
 					if(user.ownsChatroom())
 					{
-						sendMessage("Disband " + user.getChatroom().getName() + "?");
-						sendCommand("Yes", "Click to disband " + user.getChatroom().getName() + ".", "/chat disband -y");
-						sendCommand("No", "Click to NOT disband " + user.getChatroom().getName() + ".", "/chat disband -n");
+						sendDisbandMessage("");
 					}
 					else sendMessage("You are not the owner of this chatroom.");
 				}
@@ -71,78 +145,102 @@ public class CommandChat extends Command
 				ChatRoom room = user.getChatroom();
 				if((room = plugin.getChatRoom(args[0])) != null)
 				{
-					if(room != user.getChatroom())
-					{
-						user.getChatroom().getUsers().remove(this);
-						user.setChatroom(room);
-						sendMessage("Switched to " + room.getName());
-					}
-					else sendMessage("You are already in that room!");
+					join(room);
 				}
 				else sendError("Chatroom " + args[0] + " does not exist.");
 			}
 			else sendPlayerOnly();
 		}
-		else if(args.length == 2)
+		else if(args.length >= 2)
 		{
 			String name = args[1];
 			if(args[0].equalsIgnoreCase("create"))
 			{
 				if(isPlayer() && user.ownsChatroom())
 				{
-					sendMessage("Disband " + user.getChatroom().getName() + " and create " + name + "?");
-					sendCommand("Yes", "Click to disband " + user.getChatroom().getName() + ".", "/chat disband -y");
-					sendCommand("No", "Click to disband " + user.getChatroom().getName() + ".", "/chat disband -n");
+					sendDisbandMessage("and create " + name, ChatUtil.replace(args, 0, "-create"));
 				}
-				else
-				{
-					ChatRoom room = new ChatRoom(isPlayer() ? ChatType.PRIVATE : ChatType.PUBLIC, name, isPlayer() ? false : true);
-					plugin.registerChatRoom(room);
-					sendMessage("Successfully created" + room.type + " chatroom \"" + room.getName() + "\"!");
-					if(isPlayer())
-					{
-						user.getChatroom().remove(user);
-						user.setChatroom(room);
-						room.setOwner(user);
-						sendMessage("You will no longer receive global chat messages.");
-						sendMessage("To enable or disable global chat messages, type /chat global <true/false>");
-						sendCommand(ChatColor.LIGHT_PURPLE + "[Click here for more commands]", ChatColor.AQUA + "Click for more commands", "/chat commands");
-					}
-				}
+				else create(name, ChatUtil.substr(args, 2));
 			}
 			else if(args[0].equalsIgnoreCase("disband"))
 			{
 				if(!isPlayer() || user.ownsChatroom())
 				{
-					if(args[1].equalsIgnoreCase("-y") && isPlayer())
-					{
-						String roomName = user.getChatroom().getName();
-						user.getChatroom().disband();
-						sendMessage("Successfully disbanded " + roomName + ". RIP");
-					}
-					else if(args[1].equalsIgnoreCase("-n") && isPlayer())
-					{
-						sendMessage(user.getChatroom().getName() + " will NOT be disbanded.");
-					}
-					else
-					{
-						if(plugin.getChatRoom(args[1]) != null)
-						{
-							String roomName = plugin.getChatRoom(args[1]).getName();
-							plugin.getChatRoom(args[1]).disband();
-							sendMessage("Successfully disbanded " + roomName + ". RIP");
-						}
-						else sendError("Chatroom " + args[1] + " does not exist!");
-					}
+					sendDisbandMessage("and create " + name, ChatUtil.replace(args, 0, "-create"));
 				}
 				else sendError("You do not have permission to disband the chatroom.");
 			}
+			else if(args[0].equalsIgnoreCase("edit"))
+			{
+				ChatRoom room = user.getChatroom();
+				for(int i = 0; i < args.length; i++)
+				{
+					if(args[i].equalsIgnoreCase("-private")) room.type = ChatType.PRIVATE;
+					if(i + 1 < args.length)
+					{
+						if(args[i].equalsIgnoreCase("-pass")) room.setPassword(args[i + 1]);
+					}
+				}
+			}
+			else if(args[0].equalsIgnoreCase("kick"))
+			{
+				sendMessage("Kicked " + ChatUtil.toProperString(args));
+				User u;
+				for(int i = 0; i < args.length; i++)
+				{
+					if((u = plugin.getUser(args[i])) != null) user.getChatroom().add(u);
+				}
+			}
+			else if(args[0].equalsIgnoreCase("invite"))
+			{
+				sendMessage("Invited " + ChatUtil.toProperString(args) + " to the chatroom.");
+				ChatRoom room = user.getChatroom();
+				for(int i = 0; i < args.length; i++)
+				{
+					User u;
+					if((u = plugin.getUser(args[i])) != null)
+					{
+						room.add(u);
+					}
+					else sendPlayerNull(args[i]);
+					if(i + 1 < args.length)
+					{
+						if((u = plugin.getUser(args[i + 1])) != null)
+						{
+							if(args[i].equalsIgnoreCase("-mod")) room.addModerator(u);
+						}
+						else sendPlayerNull(args[i + 1]);
+					}
+				}
+			}
+			else if(args[0].equalsIgnoreCase("promote"))
+			{
+				sendMessage("Promoting " + ChatUtil.toProperString(args) + " to moderator.");
+				User u;
+				for(int i = 0; i < args.length; i++)
+				{
+					if((u = plugin.getUser(args[i])) != null) user.getChatroom().addModerator(u);
+					else sendPlayerNull(args[i]);
+				}
+			}
+			else if(args[0].equalsIgnoreCase("demote"))
+			{
+				sendMessage("Demoting " + ChatUtil.toProperString(args) + ".");
+				User u;
+				for(int i = 0; i < args.length; i++)
+				{
+					if((u = plugin.getUser(args[i])) != null) user.getChatroom().removeModerator(u);
+					else sendPlayerNull(args[i]);
+				}
+			}
+			else sendUsage();
 		}
 		else sendUsage();
 	}
 
 	public void showInfo(ChatRoom room)
 	{
+		ChatColor color = room.type == ChatType.PARTY ? color = ChatColor.GOLD : ChatColor.GREEN;
 		String owner = (room.hasOwner() ? room.getOwner().getDisplayName() : "@CONSOLE");
 		String moderators = "";
 		String users = "";
@@ -161,12 +259,12 @@ public class CommandChat extends Command
 			}
 		}
 		if(i > 10) users += "  and " + (i - 10) + " more...";
-		FancyMessage msg = new FancyMessage(room.getName()).color(ChatColor.GREEN)
+		FancyMessage msg = new FancyMessage(room.getName()).color(color)
 				.tooltip(
-				ChatColor.LIGHT_PURPLE + "Owner: " + ChatColor.RESET + owner,
-				ChatColor.DARK_PURPLE + "Moderators: \n" + ChatColor.RESET + (moderators.isEmpty() ? "  <none>" : moderators.substring(0, moderators.length() - 1)),
-				ChatColor.GREEN + "Members: \n" + ChatColor.RESET + (users.isEmpty() ? "  <none>" : users.substring(0, users.length() - 1))
-				)
+						ChatColor.LIGHT_PURPLE + "Owner: " + ChatColor.RESET + owner,
+						ChatColor.DARK_PURPLE + "Moderators: \n" + ChatColor.RESET + (moderators.isEmpty() ? "  <none>" : moderators.substring(0, moderators.length() - 1)),
+						ChatColor.GREEN + "Members: \n" + ChatColor.RESET + (users.isEmpty() ? "  <none>" : users.substring(0, users.length() - 1))
+						)
 				.suggest("/chat " + room.getName());
 		msg.send(sender);
 	}

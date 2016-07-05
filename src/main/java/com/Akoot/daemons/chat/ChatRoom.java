@@ -17,6 +17,7 @@ public class ChatRoom
 	private List<User> moderators;
 	private User owner;
 	private boolean receiveGlobal;
+	private String password;
 
 	public ChatRoom(ChatType type, String displayname, boolean receiveGlobal)
 	{
@@ -25,6 +26,7 @@ public class ChatRoom
 		this.users = new ArrayList<User>();
 		this.moderators = new ArrayList<User>();
 		this.receiveGlobal = receiveGlobal;
+		this.password = "";
 	}
 
 	public void receiveGlobal(boolean receive)
@@ -97,9 +99,24 @@ public class ChatRoom
 		}
 		Daemons.getInstance().unregisterChatRoom(this);
 	}
+	
+	public void setPassword(String newPassword)
+	{
+		this.password = newPassword;
+	}
+	
+	public boolean isPassword(String pass)
+	{
+		return pass.equals(this.password);
+	}
 
 	public boolean hasUser(User user)
 	{
 		return this.users.contains(user);
+	}
+
+	public void removeModerator(User u)
+	{
+		this.moderators.remove(u);
 	}
 }

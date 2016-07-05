@@ -101,4 +101,12 @@ public class Command
 	{
 		return name;
 	}
+	
+	protected void sendConfirmMessage(String command)
+	{
+		message = new FancyMessage("Click").color(color)
+				.then(" HERE ").color(ChatColor.RED).style(ChatColor.BOLD).command(command)
+				.then("to confirm...").color(color);
+		message.send(sender);
+	}
 }
