@@ -89,6 +89,21 @@ public class ChatUtil
 		}
 		return m.trim();
 	}
+	
+	public static String toProperStringOr(String[] args)
+	{
+		String m = args[0];
+		if(args.length > 1)
+		{
+			m = "";
+			for(int i = 0; i < args.length; i++)
+			{
+				if(i < args.length - 1) m += args[i] + ", ";
+				else m += "or " + args[i];
+			}
+		}
+		return m.trim();
+	}
 
 	public static String getTime(int time)
 	{
@@ -175,31 +190,52 @@ public class ChatUtil
 		return arr;
 	}
 
-	public String getArgFor(String arg, String[] args)
+	public static String getArgFor(String arg, String[] args)
 	{
 		for(int i = 0; i < args.length; i++)
 		{
 			String result = args[i];
-			if(i < args.length)
+			if(i + 1 < args.length)
 			{
-				result = args[i + 1];
-				if(result.startsWith("\""))
+				if(args[i].equalsIgnoreCase(arg))
 				{
-					int k = i + 2;
-					for(int j = i + 2; j < args.length; j++)
+					result = args[i + 1];
+					if(result.startsWith("\""))
 					{
-						if(args[j].endsWith("\""))
+						int k = i + 2;
+						for(int j = i + 2; j < args.length; j++)
 						{
-							k = j;
-							break;
+							if(args[j].endsWith("\""))
+							{
+								k = j;
+								break;
+							}
 						}
+						result = toString(substr(args, i + 1, k + 1));
 					}
-					result = toString(substr(args, i + 1, k));
+					return result.replaceAll("\"", "");
 				}
-				return result;
 			}
 		}
 		return "";
+	}
+	
+	public static boolean hasArgFor(String arg, String[] args)
+	{
+		for(int i = 0; i < args.length; i++)
+		{
+			if(i + 1 < args.length)
+			{
+				if(args[i].equalsIgnoreCase(arg)) return true;
+			}
+		}
+		return false;
+	}
+	
+	public static boolean contains(String arg, String[] args)
+	{
+		for(int i = 0; i < args.length; i++) if(args[i].equalsIgnoreCase(arg)) return true;
+		return false;
 	}
 
 	public static String[] removeFirst(String[] a)

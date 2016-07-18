@@ -2,12 +2,6 @@
 /build/
 /.gradle/
 
-# idea
-/.idea/
-/*.iml
-/*.ipr
-/*.iws
-
 # eclipse
 /bin/
 /.settings/
@@ -17,3 +11,5 @@
 # custom
 /testserver/
 /final/
+*.bat
+*.sh

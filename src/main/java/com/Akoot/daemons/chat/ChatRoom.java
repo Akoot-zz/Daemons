@@ -3,21 +3,22 @@ package com.Akoot.daemons.chat;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.ChatColor;
+
 import com.Akoot.daemons.Daemons;
 import com.Akoot.daemons.User;
 import com.Akoot.daemons.chat.Chats.ChatType;
 
-import net.md_5.bungee.api.ChatColor;
-
 public class ChatRoom
 {
 	private String displayname;
-	public ChatType type;
+	private ChatType type;
 	private List<User> users;
 	private List<User> moderators;
 	private User owner;
 	private boolean receiveGlobal;
 	private String password;
+	private ChatColor color;
 
 	public ChatRoom(ChatType type, String displayname, boolean receiveGlobal)
 	{
@@ -27,6 +28,12 @@ public class ChatRoom
 		this.moderators = new ArrayList<User>();
 		this.receiveGlobal = receiveGlobal;
 		this.password = "";
+		switch(type)
+		{
+		case PUBLIC: color = ChatColor.GREEN;
+		case PRIVATE: color = ChatColor.AQUA;
+		case PARTY: color = ChatColor.GOLD;
+		}
 	}
 
 	public void receiveGlobal(boolean receive)
@@ -48,7 +55,7 @@ public class ChatRoom
 	{
 		return owner;
 	}
-	
+
 	public boolean hasOwner()
 	{
 		return owner != null;
@@ -86,7 +93,10 @@ public class ChatRoom
 
 	public void remove(User user)
 	{
+		if(user.ownsChatroom()) disband();
+		else if(user.moderatesChatroom()) this.moderators.remove(user);
 		this.users.remove(user);
+
 		user.setChatroom(Daemons.getInstance().globalChatroom);
 	}
 
@@ -99,12 +109,12 @@ public class ChatRoom
 		}
 		Daemons.getInstance().unregisterChatRoom(this);
 	}
-	
+
 	public void setPassword(String newPassword)
 	{
 		this.password = newPassword;
 	}
-	
+
 	public boolean isPassword(String pass)
 	{
 		return pass.equals(this.password);
@@ -114,7 +124,7 @@ public class ChatRoom
 	{
 		return this.users.contains(user);
 	}
-	
+
 	public void rename(String newName)
 	{
 		this.displayname = newName;
@@ -123,5 +133,38 @@ public class ChatRoom
 	public void removeModerator(User u)
 	{
 		this.moderators.remove(u);
+	}
+
+	public String getPassword()
+	{
+		return password;
+	}
+
+	public ChatType getType()
+	{
+		return type;
+	}
+	
+	public void setType(ChatType type)
+	{
+		this.type = type;
+	}
+	
+	public boolean hasPassword()
+	{
+		return password.isEmpty();
+	}
+	
+	public ChatColor getColor()
+	{
+		return color;
+	}
+
+	public void broadcast(String msg)
+	{
+		for(User user: users)
+		{
+			user.sendMessage(ChatColor.GRAY + "[" + color + displayname + ChatColor.GRAY + "] " + ChatColor.RESET +  msg);
+		}
 	}
 }

@@ -1,5 +1,6 @@
 package com.Akoot.daemons;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -9,10 +10,12 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.Akoot.cthulhu.util.CthFile;
 import com.Akoot.daemons.chat.ChatRoom;
 import com.Akoot.daemons.chat.Chats.ChatType;
 import com.Akoot.daemons.commands.Commands;
 import com.Akoot.daemons.events.EventListener;
+import com.Akoot.daemons.events.ScheduledEvents;
 
 public class Daemons extends JavaPlugin
 {   
@@ -25,6 +28,10 @@ public class Daemons extends JavaPlugin
 	
 	public ChatRoom globalChatroom;
 	public ChatRoom helpChatroom;
+	
+	private File userDir;
+	private File pluginDir;
+	private CthFile config;
 
 	@Override
 	public void onEnable()
@@ -35,7 +42,20 @@ public class Daemons extends JavaPlugin
 		eventHandler = new EventListener(instance);
 		chatrooms = new ArrayList<ChatRoom>();
 		onlineUsers = new ArrayList<User>();
+		pluginDir = this.getDataFolder();
+		userDir = new File(pluginDir, "users");
+		config = new CthFile(pluginDir, "config.cth");
+		new ScheduledEvents(instance);
+		
+		mkdirs();
 		registerChatRooms();
+	}
+
+	private void mkdirs()
+	{
+		pluginDir.mkdir();
+		userDir.mkdir();
+		if(!config.exists()) config.create();
 	}
 
 	public Commands getCommands()
@@ -48,9 +68,14 @@ public class Daemons extends JavaPlugin
 		log.log(Level.INFO, msg);
 	}
 	
-	public void earn(String msg)
+	public void warn(String msg)
 	{
 		log.log(Level.WARNING, msg);
+	}
+	
+	public void severe(String msg)
+	{
+		log.log(Level.SEVERE, msg);
 	}
 
 	private void registerChatRooms()
@@ -115,6 +140,21 @@ public class Daemons extends JavaPlugin
 	public List<User> getOnlineUsers()
 	{
 		return onlineUsers;
+	}
+	
+	public File getUserDir()
+	{
+		return userDir;
+	}
+	
+	public File getPluginDir()
+	{
+		return pluginDir;
+	}
+	
+	public CthFile getConfigFile()
+	{
+		return config;
 	}
 
 	@Override

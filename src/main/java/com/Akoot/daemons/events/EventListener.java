@@ -50,7 +50,7 @@ public class EventListener implements Listener
 					.suggest("/msg " + player.getName() + " ")
 				.then("]").color(ChatColor.BLACK)
 				.then(" ")
-				.then(message);
+				.then(ChatColor.translateAlternateColorCodes('&', message));
 	}
 
 	@EventHandler
@@ -62,7 +62,7 @@ public class EventListener implements Listener
 
 		plugin.log("[" + player.getName() + ":" + user.getChatroom().getName() + "] " + event.getMessage());
 
-		if(user.getChatroom().type != ChatType.PUBLIC)
+		if(user.getChatroom().getType() != ChatType.PUBLIC)
 		{
 			for(Player recipent: event.getRecipients())
 			{
@@ -81,16 +81,15 @@ public class EventListener implements Listener
 	public void onPlayerJoin(PlayerJoinEvent event)
 	{
 		Player player = event.getPlayer();
-		plugin.getOnlineUsers().add(new User(player));
-
-		plugin.getUser(player).setBoard();
+		User user = new User(player);
+		plugin.getOnlineUsers().add(user);
+		user.setBoard();
 	}
 
 	@EventHandler
 	public void onPlayerLeave(PlayerQuitEvent event)
 	{
 		User user = plugin.getUser(event.getPlayer());
-
 		user.getChatroom().remove(user);
 		plugin.getOnlineUsers().remove(user);
 	}
