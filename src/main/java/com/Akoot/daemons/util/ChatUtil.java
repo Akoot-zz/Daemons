@@ -6,11 +6,14 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Random;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bukkit.ChatColor;
 import org.bukkit.inventory.ItemStack;
+
+import com.Akoot.daemons.OfflineUser;
 
 public class ChatUtil 
 {
@@ -89,7 +92,7 @@ public class ChatUtil
 		}
 		return m.trim();
 	}
-	
+
 	public static String toProperStringOr(String[] args)
 	{
 		String m = args[0];
@@ -219,19 +222,17 @@ public class ChatUtil
 		}
 		return "";
 	}
-	
+
 	public static boolean hasArgFor(String arg, String[] args)
 	{
 		for(int i = 0; i < args.length; i++)
 		{
 			if(i + 1 < args.length)
-			{
 				if(args[i].equalsIgnoreCase(arg)) return true;
-			}
 		}
 		return false;
 	}
-	
+
 	public static boolean contains(String arg, String[] args)
 	{
 		for(int i = 0; i < args.length; i++) if(args[i].equalsIgnoreCase(arg)) return true;
@@ -251,5 +252,37 @@ public class ChatUtil
 	public static String[] substr(String[] a, int startIndex)
 	{
 		return Arrays.copyOfRange(a, startIndex, a.length);
+	}
+
+	public static List<UUID> getUUIDSFromStrings(List<String> strings)
+	{
+		List<UUID> uuids = new ArrayList<UUID>();
+		for(String s: strings)
+			uuids.add(UUID.fromString(s));
+		return uuids;
+	}
+
+	public static List<OfflineUser> getOfflineUsers(List<UUID> uuids)
+	{
+		List<OfflineUser> users = new ArrayList<OfflineUser>();
+		for(UUID uuid: uuids)
+			users.add(new OfflineUser(uuid));
+		return users;
+	}
+
+	public static List<UUID> getUUIDSFromUsers(List<OfflineUser> users)
+	{
+		List<UUID> uuids = new ArrayList<UUID>();
+		for(OfflineUser user: users)
+			uuids.add(user.getUUID());
+		return uuids;
+	}
+
+	public static List<String> getUUIDSAsStrings(List<UUID> uuids)
+	{
+		List<String> strings = new ArrayList<String>();
+		for(UUID uuid: uuids)
+			strings.add(uuid.toString());
+		return strings;
 	}
 }

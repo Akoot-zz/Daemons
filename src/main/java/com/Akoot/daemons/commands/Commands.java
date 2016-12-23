@@ -27,13 +27,11 @@ public class Commands implements CommandExecutor
 	public void registerCommands()
 	{
 		commands.add(new CommandTest());
-		commands.add(new CommandChat());
 		commands.add(new CommandNick());
-		
+		commands.add(new CommandMake());
+
 		for(Command cmd: commands)
-		{
 			plugin.getCommand(cmd.getName()).setExecutor(this);
-		}
 	}
 
 	@Override
@@ -83,7 +81,7 @@ public class Commands implements CommandExecutor
 		}
 		return false;
 	}
-	
+
 	public List<Command> getCommands()
 	{
 		return commands;

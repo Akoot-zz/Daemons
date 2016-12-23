@@ -10,9 +10,12 @@ commands:
     Test:
         description: Test command.
         aliases: [tst]
-    Chat:
-        description: Chat command.
-        aliases: [chatroom]
     Nick:
         description: Set nickname.
         aliases: [nickname, nic]
+    Make:
+        description: Make someone do something.
+        aliases: [mk]
+    gm:
+        description: Changed gamemode.
+        aliases: []

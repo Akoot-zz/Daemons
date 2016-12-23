@@ -1,37 +1,39 @@
 package com.Akoot.daemons;
 
 import java.io.File;
+import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.Akoot.cthulhu.util.CthFile;
-import com.Akoot.daemons.chat.ChatRoom;
-import com.Akoot.daemons.chat.Chats.ChatType;
 import com.Akoot.daemons.commands.Commands;
 import com.Akoot.daemons.events.EventListener;
 import com.Akoot.daemons.events.ScheduledEvents;
+import com.Akoot.util.CthFileConfiguration;
+import com.massivecraft.factions.Factions;
+
+import net.milkbowl.vault.Vault;
+import net.milkbowl.vault.economy.Economy;
+import net.milkbowl.vault.permission.Permission;
 
 public class Daemons extends JavaPlugin
 {   
 	private Commands commands;
 	private EventListener eventHandler;
 	private static Daemons instance;
-	public List<ChatRoom> chatrooms;
 	private List<User> onlineUsers;
 	private Logger log;
-	
-	public ChatRoom globalChatroom;
-	public ChatRoom helpChatroom;
-	
+
 	private File userDir;
 	private File pluginDir;
-	private CthFile config;
+	private CthFileConfiguration config;
 
 	@Override
 	public void onEnable()
@@ -40,15 +42,13 @@ public class Daemons extends JavaPlugin
 		log = Bukkit.getLogger();
 		commands = new Commands(instance);
 		eventHandler = new EventListener(instance);
-		chatrooms = new ArrayList<ChatRoom>();
 		onlineUsers = new ArrayList<User>();
 		pluginDir = this.getDataFolder();
 		userDir = new File(pluginDir, "users");
-		config = new CthFile(pluginDir, "config.cth");
+		config = new CthFileConfiguration(pluginDir, "config");
 		new ScheduledEvents(instance);
-		
+
 		mkdirs();
-		registerChatRooms();
 	}
 
 	private void mkdirs()
@@ -62,43 +62,20 @@ public class Daemons extends JavaPlugin
 	{
 		return commands;
 	}
-	
+
 	public void log(String msg)
 	{
 		log.log(Level.INFO, msg);
 	}
-	
+
 	public void warn(String msg)
 	{
 		log.log(Level.WARNING, msg);
 	}
-	
+
 	public void severe(String msg)
 	{
 		log.log(Level.SEVERE, msg);
-	}
-
-	private void registerChatRooms()
-	{
-		chatrooms.add(globalChatroom = new ChatRoom(ChatType.PUBLIC, "Global", true));
-		chatrooms.add(helpChatroom = new ChatRoom(ChatType.PARTY, "Help", true));
-	}
-
-	public void registerChatRoom(ChatRoom chatroom)
-	{
-		chatrooms.add(chatroom);
-	}
-	
-	public void unregisterChatRoom(ChatRoom chatroom)
-	{
-		if(chatrooms.contains(chatroom)) chatrooms.remove(chatroom);
-	}
-
-	public ChatRoom getChatRoom(String search)
-	{
-		for(ChatRoom chatroom: chatrooms)
-			if(chatroom.getName().toLowerCase().contains(search.toLowerCase())) return chatroom;
-		return null;
 	}
 
 	public EventListener getEventHandler()
@@ -114,12 +91,8 @@ public class Daemons extends JavaPlugin
 	public User getUser(Player player)
 	{
 		for(User user: onlineUsers)
-		{
-			if(user.getPlayer() == player)
-			{
+			if(user.getUUID().equals(player.getUniqueId()))
 				return user;
-			}
-		}
 		return null;
 	}
 
@@ -137,24 +110,83 @@ public class Daemons extends JavaPlugin
 		return null;
 	}
 
+	public User getUser(UUID uuid)
+	{
+		for(User user: onlineUsers)
+			if(user.getUUID().equals(uuid)) return user;
+		return null;
+	}
+
+	public OfflineUser getOfflineUser(InetAddress IP)
+	{
+		for(OfflineUser u: getOfflineUsers())
+			if(u.getIP().equalsIgnoreCase(IP.toString()))
+				return u;
+		return null;
+	}
+
 	public List<User> getOnlineUsers()
 	{
 		return onlineUsers;
 	}
-	
+
+	public List<OfflineUser> getOfflineUsers()
+	{
+		List<OfflineUser> users = new ArrayList<OfflineUser>();
+		for(File f: userDir.listFiles())
+		{
+			if(f.getName().endsWith(".cth"))
+			{
+				CthFileConfiguration config = new CthFileConfiguration(f.getAbsolutePath());
+				users.add(new OfflineUser(UUID.fromString(config.getName().substring(0, config.getName().indexOf(".")))));
+			}
+		}
+		return users;
+	}
+
 	public File getUserDir()
 	{
 		return userDir;
 	}
-	
+
 	public File getPluginDir()
 	{
 		return pluginDir;
 	}
-	
-	public CthFile getConfigFile()
+
+	public CthFileConfiguration getConfigFile()
 	{
 		return config;
+	}
+
+	public Factions getFactions()
+	{
+		return (Factions) this.getServer().getPluginManager().getPlugin("Factions");
+	}
+
+	public Vault getVault()
+	{
+		return (Vault) this.getServer().getPluginManager().getPlugin("Vault");
+	}
+
+	public Economy getEconomy()
+	{
+		if(getVault() != null)
+		{
+			RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
+			return rsp.getProvider();
+		}
+		return null;
+	}
+
+	public Permission getPermissions()
+	{
+		if(getVault() != null)
+		{
+			RegisteredServiceProvider<Permission> rsp = getServer().getServicesManager().getRegistration(Permission.class);
+			return rsp.getProvider();
+		}
+		return null;
 	}
 
 	@Override

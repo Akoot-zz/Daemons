@@ -8,9 +8,13 @@ buildscript {
 
     dependencies {
         classpath group: 'eu.appsatori', name: 'gradle-fatjar-plugin', version: '0.3'
-        classpath group: 'com.github.rodionmoiseev.gradle.plugins', name: 'idea-utils', version: '0.2'
         classpath group: 'de.undercouch', name: 'gradle-download-task', version: '1.2'
     }
+}
+
+configurations {
+    provided
+    compile.extendsFrom provided
 }
 
 apply plugin: 'java'
@@ -18,20 +22,6 @@ apply plugin: 'eu.appsatori.fatjar'
 apply plugin: 'de.undercouch.download'
 
 apply plugin: 'eclipse'
-apply plugin: 'idea'
-apply plugin: 'idea-utils'
-
-idea {
-    project {
-        ipr {
-            withXml { xmlProvider ->
-                def project = xmlProvider.asNode()
-                def runConfigs = new XmlParser().parse(new File("config/intellij_runconfigs.txt"))
-                project.append(runConfigs)
-            }
-        }
-    }
-}
 
 repositories {
     mavenLocal()
@@ -51,10 +41,11 @@ dependencies {
     compile group: 'org.spigotmc', name: 'bukkit', version: project.property("apiversion"), { ext { fatJarExclude = true } }
     compile group: 'org.bukkit', name: 'craftbukkit', version: project.property("apiversion"), { ext { fatJarExclude = true } }
   }
-  // dependencies go here
-  // Example:
-  // compile group: 'com.google.guava', name: 'guava', version: '18.0'
   compile "mkremins:fanciful:0.3.5-SNAPSHOT"
+  compile files('C:/Users/Akoot/Dev/Java/lib/Akoot-Util.jar')
+  provided files('C:/Users/Akoot/Dev/Java/lib/MassiveCore.jar')
+  provided files('C:/Users/Akoot/Dev/Java/lib/Factions.jar')
+  provided files('C:/Users/Akoot/Dev/Java/lib/Vault.jar')
 }
 
 processResources {

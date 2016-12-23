@@ -24,7 +24,7 @@ public class ScheduledEvents
 			for(User user: plugin.getOnlineUsers())
 			{
 				int playtime = 0;
-				if(user.getConfig().has("playtime")) playtime = user.getConfig().getInt("playtime");
+				playtime = user.getConfig().getInt("playtime");
 				user.getConfig().set("playtime", playtime + 1);
 			}
 		}
