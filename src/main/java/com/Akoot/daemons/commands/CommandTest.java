@@ -8,12 +8,13 @@ public class CommandTest extends Command
 	{
 		this.name = "Test";
 		this.color = ChatColor.GREEN;
+		this.permission = "daemons.command.test";
 	}
 
 	@Override
 	public void onCommand()
 	{
-		sendUsage();
+		sendUsage("");
 		sendMessage("Wew!", "Success mate!");
 	}
 }

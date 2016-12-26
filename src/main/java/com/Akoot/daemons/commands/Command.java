@@ -1,5 +1,6 @@
 package com.Akoot.daemons.commands;
 
+import org.apache.commons.lang.math.RandomUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -26,12 +27,14 @@ public class Command
 
 	protected void onCommand(){}
 
-	protected void sendUsage()
+	protected void sendUsage(String subcommand)
 	{
+		String subcommand2 = subcommand;
+		if(subcommand2.contains("<name>|\\[name\\]")) subcommand2.replaceAll("<name>|\\[name\\]", plugin.getOfflineUsers().get(RandomUtils.nextInt(plugin.getOfflineUsers().size())).getName());
 		message = new FancyMessage(color + "Usage: ");
-		message.then("/" + name)
-		.suggest("/" + name)
-		.tooltip(color + "Suggest: /" + name)
+		message.then("/" + name.toLowerCase() + " " + subcommand)
+		.suggest("/" + name.toLowerCase() + " " + subcommand2)
+		.tooltip(color + "Suggest: /" + name.toLowerCase() + ChatColor.WHITE + " " + subcommand)
 		.send(sender);
 	}
 
@@ -61,7 +64,7 @@ public class Command
 
 	protected void noPermission()
 	{
-		noPermission("use: " + ChatColor.RED + "/" + name);
+		noPermission("use: " + ChatColor.RED + "/" + name.toLowerCase());
 	}
 
 	protected void sendPlayerNull(String arg)
@@ -104,7 +107,7 @@ public class Command
 
 	protected void sendPlayerOnly(String arg)
 	{
-		sender.sendMessage("Sorry, " + (arg != null ? "subcommand " + arg : "/" + name) + " can only be used by players.");
+		sender.sendMessage("Sorry, " + (arg != null ? "subcommand " + arg : "/" + name.toLowerCase()) + " can only be used by players.");
 	}
 
 	protected boolean isPlayer()

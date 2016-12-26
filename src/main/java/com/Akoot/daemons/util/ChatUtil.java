@@ -32,6 +32,20 @@ public class ChatUtil
 		}
 		return ChatColor.translateAlternateColorCodes('&', s);
 	}
+	
+	public static String censor(String msg)
+	{
+		String censored = "";
+		char[] replacer = {'!','@','#','$','%','%','^','&','*'};
+		int i = 0;
+		for(char c: msg.toCharArray())
+		{
+			if(i > replacer.length - 1) i = 0;
+			censored += replacer[i];
+			i++;
+		}
+		return censored;
+	}
 
 	public static String getCurrentDate()
 	{

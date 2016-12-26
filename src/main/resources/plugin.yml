@@ -1,8 +1,8 @@
 name: Daemons
 version: @version@-@apitype@-@apiversion@
-description: An empty example plugin for Spigot with Gradle
+description: Daemons
 authors: [Akoot]
-website: https://github.com/ReneHollander/empty-spigot-plugin
+website: https://google.com
 
 main: com.Akoot.daemons.Daemons
 
@@ -19,3 +19,24 @@ commands:
     gm:
         description: Changed gamemode.
         aliases: []
+    Playtime:
+        description: Shows playtime.
+        aliases: [pt, playt]
+    SetLore:
+        description: Sets the lore of the item in hand.
+        aliases: [sl, lore]
+    Rename:
+        description: Rename item in hand
+        aliases: [rn]
+    SetMOTD:
+        description: Sets the MOTD of the server.
+        aliases: [smotd]
+    Raw:
+        description: Send a Raw message (No prefix)
+        aliases: []
+    Say:
+        description: Say a message through the server
+        aliases: []
+    Profile:
+        description: Profile command.
+        aliases: [p, prof]

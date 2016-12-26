@@ -12,37 +12,37 @@ public class CommandNick extends Command
 	{
 		this.name = "Nick";
 		this.color = ChatColor.AQUA;
+		this.permission = "daemons.command.nick";
 	}
 
 	@Override
 	public void onCommand()
 	{
-		if(sender instanceof Player)
+		if(args.length == 0 && sender instanceof Player)
+			sendMessage("Your current nickname: " + ChatColor.RESET + user.getDisplayName());
+		else
 		{
-			if(args.length == 0)
-				sendMessage("Your current nickname: " + ChatColor.RESET + user.getPlayer().getCustomName());
-			else
+			User target = plugin.getUser(args[0]);
+			if(target == null)
 			{
-				User target = plugin.getUser(args[0]);
-				if(target == null)
+				if(user != null)
 				{
 					String newName = ChatUtil.toString(args);
 					user.setDisplayName(ChatUtil.toString(args));
-					sendMessage("Changed your nickname to: " + ChatColor.RESET + newName);
+					sendMessage("Changed your nickname to: " + ChatColor.RESET + ChatUtil.color(newName));
 				}
-				else
+				else sendPlayerOnly();
+			}
+			else
+			{
+				if(args.length >= 2)
 				{
-					if(args.length >= 2)
-					{
-						String newName = ChatUtil.toString(ChatUtil.removeFirst(args));
-						target.setDisplayName(newName);
-						sendMessage("Changed " + target.getName() + "'s nickname to: " + ChatColor.RESET + newName);
-					}
-					else
-						this.sendUsage();
+					String newName = ChatUtil.toString(ChatUtil.removeFirst(args));
+					target.setDisplayName(newName);
+					sendMessage("Changed " + target.getName() + "'s nickname to: " + ChatColor.RESET + ChatUtil.color(newName));
 				}
+				else this.sendUsage("[player] <nickname>");
 			}
 		}
-		else sendPlayerOnly();
 	}
 }

@@ -100,9 +100,9 @@ public class Daemons extends JavaPlugin
 	{
 		for(User user: onlineUsers)
 		{
-			if(user.getPlayer().getName().toLowerCase().contains(search.toLowerCase()) ||
-					user.getPlayer().getDisplayName().toLowerCase().toLowerCase().contains(search.toLowerCase()) ||
-					user.getPlayer().getUniqueId().toString().contains(search.toLowerCase()))
+			if(user.getName().toLowerCase().contains(search.toLowerCase()) ||
+					user.getDisplayName().toLowerCase().toLowerCase().contains(search.toLowerCase()) ||
+					user.getUUID().toString().equals(search.toLowerCase()))
 			{
 				return user;
 			}
@@ -125,6 +125,16 @@ public class Daemons extends JavaPlugin
 		return null;
 	}
 
+	public OfflineUser getOfflineUser(String search)
+	{
+		for(OfflineUser u: getOfflineUsers())
+			if(u.getName().toLowerCase().contains(search.toLowerCase()) ||
+					u.getDisplayName().toLowerCase().contains(search.toLowerCase()) ||
+					u.getUUID().toString().toLowerCase().equals(search.toLowerCase()))
+				return u;
+		return null;
+	}
+
 	public List<User> getOnlineUsers()
 	{
 		return onlineUsers;
@@ -143,7 +153,7 @@ public class Daemons extends JavaPlugin
 		}
 		return users;
 	}
-
+	
 	public File getUserDir()
 	{
 		return userDir;

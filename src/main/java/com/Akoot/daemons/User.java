@@ -26,6 +26,10 @@ public class User extends OfflineUser
 			config.set("displayname", player.getDisplayName());
 			config.set("playtime", 0);
 			config.set("IP", player.getAddress().getAddress().toString());
+			config.set("age", "undefined");
+			config.set("gender", "undefined");
+			config.set("chat-color", "white");
+			config.set("censor-chat", true);
 		}
 	}
 

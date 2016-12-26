@@ -39,6 +39,11 @@ public class OfflineUser
 		return ChatUtil.color(config.getString("displayname"));
 	}
 	
+	public void setPlaytime(int playtime)
+	{
+		this.config.set("playtime", playtime);
+	}
+	
 	public int getPlaytime()
 	{
 		return this.config.getInt("playtime");
