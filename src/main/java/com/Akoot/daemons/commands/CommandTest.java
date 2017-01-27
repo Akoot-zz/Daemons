@@ -2,6 +2,8 @@ package com.Akoot.daemons.commands;
 
 import org.bukkit.ChatColor;
 
+import com.Akoot.daemons.util.ChatUtil;
+
 public class CommandTest extends Command
 {
 	public CommandTest()
@@ -14,7 +16,10 @@ public class CommandTest extends Command
 	@Override
 	public void onCommand()
 	{
-		sendUsage("");
 		sendMessage("Wew!", "Success mate!");
+		if(user != null)
+		{
+			user.getPlayer().getInventory().addItem(plugin.getCustomItems().getCustomItem(ChatUtil.toString(args)));
+		}
 	}
 }

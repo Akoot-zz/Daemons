@@ -39,9 +39,9 @@ public class OfflineUser
 		return ChatUtil.color(config.getString("displayname"));
 	}
 	
-	public void setPlaytime(int playtime)
+	public void updatePlaytime()
 	{
-		this.config.set("playtime", playtime);
+		this.config.set("playtime", getPlaytime() + 1);
 	}
 	
 	public int getPlaytime()
@@ -95,5 +95,41 @@ public class OfflineUser
 	public String getIP()
 	{
 		return config.getString("IP");
+	}
+	
+	public boolean isBirthday()
+	{
+		System.out.println(ChatUtil.getCurrentDate("%d/%d/%d") + "=" + getBirthday());
+		return ChatUtil.getCurrentDate("%d/%d/%d").startsWith(getBirthday());
+	}
+	
+	public String getBirthday()
+	{
+		return config.getString("birthday");
+	}
+	
+	public void updateRefreshCounter()
+	{
+		config.set("list-refreshes", refreshCounter() + 1);
+	}
+	
+	public int refreshCounter()
+	{
+		return config.getInt("list-refreshes");
+	}
+	
+	public void updateJoinCounter()
+	{
+		config.set("times-joined", refreshCounter() + 1);
+	}
+	
+	public int joinCounter()
+	{
+		return config.getInt("times-joined");
+	}
+	
+	public void pay(double money)
+	{
+		economy.depositPlayer(getOfflinePlayer(), money);
 	}
 }

@@ -40,3 +40,9 @@ commands:
     Profile:
         description: Profile command.
         aliases: [p, prof]
+    Redeem:
+        description: Redeem command.
+        aliases: [rd, rdeem]
+    Shutdown:
+        description: Shuts down the server.
+        aliases: [stop]

@@ -13,9 +13,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.Akoot.daemons.chestshop.ShopHandler;
 import com.Akoot.daemons.commands.Commands;
 import com.Akoot.daemons.events.EventListener;
 import com.Akoot.daemons.events.ScheduledEvents;
+import com.Akoot.daemons.items.CustomItems;
 import com.Akoot.util.CthFileConfiguration;
 import com.massivecraft.factions.Factions;
 
@@ -26,6 +28,8 @@ import net.milkbowl.vault.permission.Permission;
 public class Daemons extends JavaPlugin
 {   
 	private Commands commands;
+	private CustomItems items;
+	private ScheduledEvents scheduler;
 	private EventListener eventHandler;
 	private static Daemons instance;
 	private List<User> onlineUsers;
@@ -41,12 +45,14 @@ public class Daemons extends JavaPlugin
 		instance = this;
 		log = Bukkit.getLogger();
 		commands = new Commands(instance);
+		items = new CustomItems(instance);
 		eventHandler = new EventListener(instance);
 		onlineUsers = new ArrayList<User>();
 		pluginDir = this.getDataFolder();
 		userDir = new File(pluginDir, "users");
 		config = new CthFileConfiguration(pluginDir, "config");
-		new ScheduledEvents(instance);
+		scheduler = new ScheduledEvents(instance);
+		new ShopHandler(instance);
 
 		mkdirs();
 	}
@@ -55,12 +61,28 @@ public class Daemons extends JavaPlugin
 	{
 		pluginDir.mkdir();
 		userDir.mkdir();
-		if(!config.exists()) config.create();
+		if(!config.exists())
+		{
+			config.create();
+			config.set("MOTD", "&2A Minecraft server", "&aA Minecraft server");
+			config.set("shop-header", "&lShop");
+			config.set("swears", "poop", "pee", "darn");
+		}
 	}
 
 	public Commands getCommands()
 	{
 		return commands;
+	}
+	
+	public CustomItems getCustomItems()
+	{
+		return items;
+	}
+	
+	public ScheduledEvents getScheduler()
+	{
+		return scheduler;
 	}
 
 	public void log(String msg)
@@ -153,7 +175,7 @@ public class Daemons extends JavaPlugin
 		}
 		return users;
 	}
-	
+
 	public File getUserDir()
 	{
 		return userDir;

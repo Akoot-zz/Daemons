@@ -17,14 +17,13 @@ import com.Akoot.daemons.OfflineUser;
 
 public class ChatUtil 
 {
-	public static String[] colors = {"a","b","c","d","e","3","4","5","6","9","2"};
 	public static String[] rainbowseq = {"a","3","9","5","d","c","6","e"};
 	private static Random random = new Random();
 	private static Calendar cal;
 
 	public static String color(String s)
 	{
-		s = s.replace("&h", "&" + colors[random.nextInt(colors.length - 1)]);
+		s = s.replace("&h", randomColor());
 		if(s.contains("&x"))
 		{
 			String toColor = getRegex("&x[^&]*", s);
@@ -36,21 +35,29 @@ public class ChatUtil
 	public static String censor(String msg)
 	{
 		String censored = "";
-		char[] replacer = {'!','@','#','$','%','%','^','&','*'};
-		int i = 0;
-		for(char c: msg.toCharArray())
+		char[] replacer = {'!','@','#','$','%','%','^','&','*', '='};
+		int last = -1;
+		int r = last;
+		for(int i = 0; i < msg.length(); i++)
 		{
-			if(i > replacer.length - 1) i = 0;
-			censored += replacer[i];
-			i++;
+			r = random.nextInt(replacer.length - 1);
+			while(r == last)
+				r = random.nextInt(replacer.length - 1);
+			censored += replacer[r];
+			last = r;
 		}
 		return censored;
+	}
+	
+	public static String getCurrentDate(String format)
+	{
+		cal = new GregorianCalendar();   
+		return String.format(format, cal.get(Calendar.MONTH) + 1, cal.get(Calendar.DAY_OF_MONTH), cal.get(Calendar.YEAR));
 	}
 
 	public static String getCurrentDate()
 	{
-		cal = new GregorianCalendar();   
-		return String.format("%d-%d-%d", cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH), cal.get(Calendar.YEAR));
+		return getCurrentDate("%d-%d-%d");
 	}
 
 	public static String getCurrentTime()
@@ -63,10 +70,7 @@ public class ChatUtil
 	{
 		Pattern pattern = Pattern.compile(regex);
 		Matcher matcher = pattern.matcher(data);
-		if(matcher.find())
-		{
-			data = matcher.group(0);
-		}
+		if(matcher.find()) data = matcher.group(0);
 		return data;
 	}
 
@@ -79,9 +83,7 @@ public class ChatUtil
 	{
 		List<String> colors = new ArrayList<String>();
 		for(ChatColor c: ChatColor.values())
-		{
 			colors.add("&" + Character.toString(c.getChar()));
-		}
 		colors.add("&h");
 		colors.add("&x");
 		return colors;
@@ -122,9 +124,8 @@ public class ChatUtil
 		return m.trim();
 	}
 
-	public static String getTime(int time)
+	public static String getTime(int minutes)
 	{
-		int minutes = time;
 		String message = "";
 		List<String> args = new ArrayList<String>();
 		if(minutes >= 60)
@@ -143,15 +144,10 @@ public class ChatUtil
 		int i = random.nextInt(rainbowseq.length - 1);
 		for(char c: msg.toCharArray())
 		{
-			if(i >= rainbowseq.length)
-			{
-				i = 0;
-			}
+			if(i >= rainbowseq.length) i = 0;
 			String ch = String.valueOf(c);
-			if(!ch.equals("\\s"))
-			{
+			if(!ch.equals(" "))
 				ch = "&" + rainbowseq[i] + ch;
-			}
 			rainbow += ch;
 			i++;
 		}
@@ -162,9 +158,7 @@ public class ChatUtil
 	{
 		String msg = "";
 		for(String s: args)
-		{
 			msg += s + "\n";
-		}
 		msg = msg.trim();
 		return msg;
 	}
@@ -173,9 +167,7 @@ public class ChatUtil
 	{
 		String msg = "";
 		for(Object s: args)
-		{
 			msg += s + " ";
-		}
 		msg = msg.trim();
 		return msg;
 	}
@@ -189,9 +181,7 @@ public class ChatUtil
 	{
 		String msg = "";
 		for(String s: args)
-		{
 			msg += s + " ";
-		}
 		msg = msg.trim();
 		return msg;
 	}

@@ -43,9 +43,7 @@ dependencies {
   }
   compile "mkremins:fanciful:0.3.5-SNAPSHOT"
   compile files('C:/Users/Akoot/Dev/Java/lib/Akoot-Util.jar')
-  provided files('C:/Users/Akoot/Dev/Java/lib/MassiveCore.jar')
-  provided files('C:/Users/Akoot/Dev/Java/lib/Factions.jar')
-  provided files('C:/Users/Akoot/Dev/Java/lib/Vault.jar')
+  compile files('C:/Users/Akoot/Dev/Java/lib/MassiveCore.jar', 'C:/Users/Akoot/Dev/Java/lib/Factions.jar', 'C:/Users/Akoot/Dev/Java/lib/Vault.jar'), { ext { fatJarExclude = true } }
 }
 
 processResources {
@@ -66,7 +64,7 @@ clean {
 
 task deploy(type: Copy, dependsOn: ['build']) {
     from "${buildDir}/libs"
-    into "final/"
+    into "C:/Users/Akoot/Servers/417/plugins"
 }
 
 task setupDevServer(type: Copy) {

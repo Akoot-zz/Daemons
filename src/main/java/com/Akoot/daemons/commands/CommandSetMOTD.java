@@ -19,7 +19,7 @@ public class CommandSetMOTD extends Command
 		if(args.length > 0)
 		{
 			String msg = ChatUtil.toString(args);
-			plugin.getConfigFile().set("MOTD", ChatUtil.color(msg));
+			plugin.getConfigFile().set("MOTD", msg);
 			sendMessage("Server MOTD set to: " + ChatColor.WHITE + ChatUtil.color(msg));
 		}
 		else sendUsage("<motd>");

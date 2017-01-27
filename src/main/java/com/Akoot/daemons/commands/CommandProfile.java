@@ -5,32 +5,65 @@ import org.bukkit.ChatColor;
 import com.Akoot.daemons.OfflineUser;
 import com.Akoot.util.StringUtil;
 
+import mkremins.fanciful.FancyMessage;
+
 public class CommandProfile extends Command
 {
+	private static final String FORBIDDEN_DISPLAY = "IP|list-refreshes|chat-filter";
+	private static final String FORBIDDEN_EDIT = "IP|times-joined|list-refreshes|playtime";
+
 	public CommandProfile()
 	{
 		this.name = "profile";
-		this.color = ChatColor.GREEN;
+		this.color = ChatColor.DARK_GREEN;
 		this.permission = "daemons.command.profile";
 	}
 
-	public void sendProfile(OfflineUser user)
+	public void sendProfile(OfflineUser u)
 	{
-		sendMessage(user.getName() + "'s profile");
-		for(String s: user.getConfig().listKeys())
-			sendMessage(s + ": " + ChatColor.WHITE + user.getConfig().getString(s));
+		sendMessage(u.getName() + "'s profile");
+		for(String s: u.getConfig().listKeys())
+			if(!s.matches(FORBIDDEN_DISPLAY) || user.isOP())
+				sendMessage(s + ": " + ChatColor.WHITE + u.getConfig().getString(s));
 	}
 
 	@Override
 	public void onCommand()
 	{
 		if(args.length == 0)
+		{
 			if(user != null) sendProfile(user);
-			else
+			else sendPlayerOnly();
+		}
+		else if(args.length == 1)
+		{
+			if(user != null)
 			{
-				sendPlayerOnly();
-				return;
+				FancyMessage fm = new FancyMessage("Edit Profile")
+						.color(color)
+						.then("\n")
+						.then("Click to edit").style(ChatColor.ITALIC)
+						.then("\n")
+
+						.then("Birthday").color(ChatColor.LIGHT_PURPLE)
+						.tooltip(ChatColor.GRAY + "Please use this format: mm/dd/yyyy or mm/dd", "  example: 4/20/1893", "  example: 4/20", "  example: 4-20-1893", "  example: 4-20")
+						.suggest("/profile edit birthday ")
+						.then("\n")
+
+						.then("Chat-Filter").color(ChatColor.RED)
+						.tooltip(ChatColor.GRAY + "true/false")
+						.suggest("/profile edit chat-filter ")
+						.then("\n")
+
+						.then("Chat-Color").color(ChatColor.AQUA)
+						.tooltip(ChatColor.GRAY + "Must be full color name", "  example: GOLD", "  example: LIGHT_PURPLE", "  example: AQUA")
+						.suggest("/profile edit chat-color ")
+						.then("\n")
+						;
+				fm.send(sender);
 			}
+			else sendPlayerOnly();
+		}
 		else
 		{
 			OfflineUser target = plugin.getOfflineUser(args[0]);
@@ -55,18 +88,22 @@ public class CommandProfile extends Command
 					if(args.length > index + 1)
 					{
 						String key = args[index + 1].toLowerCase();
-						if(key.matches("displayname|age|gender|censor-chat|chat-color"))
+						if(!key.matches(FORBIDDEN_EDIT) || user.isOP())
 						{
 							String value = StringUtil.toString(StringUtil.substr(args, index + 2));
-							target.getConfig().set(key, value);
-							sendMessage("Successfully changed " + ChatColor.LIGHT_PURPLE + key + color + " to: " + ChatColor.WHITE + value + "!");
+							if(target.getConfig().listKeys().contains(key))
+							{
+								target.getConfig().set(key, value);
+								sendMessage("Successfully changed " + ChatColor.LIGHT_PURPLE + key + color + " to: " + ChatColor.WHITE + value + "!");
+							}
+							else sendError("\"" + args[index + 1] + "\" is not a valid profile key.");
 						}
 						else sendError("\"" + args[index + 1] + "\" is not an editable profile key.");
 					}
 				}
 				else if(args[index].toLowerCase().matches(StringUtil.toString(target.getConfig().listKeys()).replaceAll(" ", "|")))
 					sendMessage(target.getName() + "'s " + args[index].toLowerCase() + ": " + ChatColor.WHITE + target.getConfig().getString(args[index].toLowerCase()));
-				else sendUsage("[user] [edit] <key> <new value>");
+				else sendUsage("[player] [edit] <key> <new value>");
 			}
 		}
 	}

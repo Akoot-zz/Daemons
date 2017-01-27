@@ -28,7 +28,7 @@ public class CommandRename extends Command
 				Player player = user.getPlayer();
 				if((player.getInventory().getItemInMainHand() != null) && (player.getInventory().getItemInMainHand().getType() != Material.AIR))
 				{
-					String newName = ChatUtil.color("&r" + ChatUtil.toString(args));
+					String newName = ChatColor.RESET + ChatUtil.toString(args);
 					ItemMeta meta = player.getInventory().getItemInMainHand().getItemMeta();
 					meta.setDisplayName(newName);
 					player.getInventory().getItemInMainHand().setItemMeta(meta);
