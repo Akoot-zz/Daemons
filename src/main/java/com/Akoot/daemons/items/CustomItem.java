@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.event.Event;
+import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -26,7 +26,7 @@ public class CustomItem
 	
 	public void onRightClick() {}
 	
-	public void onPickup(Event event) {}
+	public void onPickup(PlayerPickupItemEvent event) {}
 	
 	public ItemStack getItem()
 	{
