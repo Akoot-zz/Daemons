@@ -14,9 +14,4 @@ public class CustomWeapon extends CustomItem
 	public void onEntityDeath(EntityDeathEvent event) {}
 	
 	public void onAttack(LivingEntity entity) {}
-	
-	public void setWeilder(LivingEntity entity)
-	{
-		this.wielder = entity;
-	}
 }

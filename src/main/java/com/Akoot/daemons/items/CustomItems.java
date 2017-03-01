@@ -23,8 +23,13 @@ public class CustomItems
 
 	public void registerItems()
 	{
+		/* Weapons */
 		items.add(new FinnSword());
 		items.add(new MasterSword());
+		
+		/* Items */
+		for(Rupee.Type type: Rupee.Type.values())
+			items.add(new Rupee(type));
 
 		for(CustomItem item: items)
 			item.plugin = plugin;
@@ -45,7 +50,7 @@ public class CustomItems
 			{
 				if(i.getItem().equals(item))
 				{
-					((CustomWeapon) i).setWeilder(weilder);
+					i.setWeilder(weilder);
 					return (CustomWeapon) i;
 				}
 			}
@@ -56,11 +61,13 @@ public class CustomItems
 	public CustomItem getCustomItem(ItemStack item, LivingEntity weilder)
 	{
 		for(CustomItem i: items)
+		{
 			if(i.getItem().equals(item))
 			{
-				((CustomWeapon) i).setWeilder(weilder);
+				i.setWeilder(weilder);
 				return i;
 			}
+		}
 		return null;
 	}
 

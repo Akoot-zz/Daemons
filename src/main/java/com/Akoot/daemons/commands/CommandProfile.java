@@ -39,25 +39,23 @@ public class CommandProfile extends Command
 		{
 			if(user != null)
 			{
-				FancyMessage fm = new FancyMessage("Edit Profile")
-						.color(color)
-						.then("\n")
-						.then("Click to edit").style(ChatColor.ITALIC)
+				FancyMessage fm = new FancyMessage("(Click to edit)")
+						.style(ChatColor.ITALIC)
 						.then("\n")
 
 						.then("Birthday").color(ChatColor.LIGHT_PURPLE)
-						.tooltip(ChatColor.GRAY + "Please use this format: mm/dd/yyyy or mm/dd", "  example: 4/20/1893", "  example: 4/20", "  example: 4-20-1893", "  example: 4-20")
-						.suggest("/profile edit birthday ")
+						.tooltip(ChatColor.GRAY + "Please use this format: mm/dd/yyyy or mm/dd", "  example: 4/20/1893", "  example: 4/20")
+						.suggest("/profile set birthday ")
 						.then("\n")
 
 						.then("Chat-Filter").color(ChatColor.RED)
 						.tooltip(ChatColor.GRAY + "true/false")
-						.suggest("/profile edit chat-filter ")
+						.suggest("/profile set chat-filter ")
 						.then("\n")
 
 						.then("Chat-Color").color(ChatColor.AQUA)
 						.tooltip(ChatColor.GRAY + "Must be full color name", "  example: GOLD", "  example: LIGHT_PURPLE", "  example: AQUA")
-						.suggest("/profile edit chat-color ")
+						.suggest("/profile set chat-color ")
 						.then("\n")
 						;
 				fm.send(sender);

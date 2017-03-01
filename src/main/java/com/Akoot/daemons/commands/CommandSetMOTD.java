@@ -18,9 +18,21 @@ public class CommandSetMOTD extends Command
 	{
 		if(args.length > 0)
 		{
-			String msg = ChatUtil.toString(args);
-			plugin.getConfigFile().set("MOTD", msg);
-			sendMessage("Server MOTD set to: " + ChatColor.WHITE + ChatUtil.color(msg));
+			if(args.length == 1 && args[1].toLowerCase().matches("(-)?(en|dis)able(d)?"))
+			{
+				boolean enabled = args[1].toLowerCase().startsWith("e");
+				if(enabled)
+					plugin.getConfigFile().set("multiple-motd", true);
+				else
+					plugin.getConfigFile().set("multiple-motd", false);
+				sendMessage((enabled ? "En" : "Dis") + "abled multiple MOTDs!");
+			}
+			else
+			{
+				String msg = ChatUtil.toString(args);
+				plugin.setMOTD(msg);
+				sendMessage("Server MOTD set to: " + ChatColor.WHITE + ChatUtil.color(msg));
+			}
 		}
 		else sendUsage("<motd>");
 	}

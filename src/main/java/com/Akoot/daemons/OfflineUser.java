@@ -99,7 +99,6 @@ public class OfflineUser
 	
 	public boolean isBirthday()
 	{
-		System.out.println(ChatUtil.getCurrentDate("%d/%d/%d") + "=" + getBirthday());
 		return ChatUtil.getCurrentDate("%d/%d/%d").startsWith(getBirthday());
 	}
 	

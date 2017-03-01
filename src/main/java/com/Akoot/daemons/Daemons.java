@@ -4,6 +4,7 @@ import java.io.File;
 import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -13,11 +14,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.Akoot.daemons.chestshop.ShopHandler;
 import com.Akoot.daemons.commands.Commands;
 import com.Akoot.daemons.events.EventListener;
 import com.Akoot.daemons.events.ScheduledEvents;
 import com.Akoot.daemons.items.CustomItems;
+import com.Akoot.daemons.util.ChatUtil;
 import com.Akoot.util.CthFileConfiguration;
 import com.massivecraft.factions.Factions;
 
@@ -38,11 +39,14 @@ public class Daemons extends JavaPlugin
 	private File userDir;
 	private File pluginDir;
 	private CthFileConfiguration config;
+	
+	public Random random;
 
 	@Override
 	public void onEnable()
 	{
 		instance = this;
+		random = new Random();
 		log = Bukkit.getLogger();
 		commands = new Commands(instance);
 		items = new CustomItems(instance);
@@ -52,7 +56,6 @@ public class Daemons extends JavaPlugin
 		userDir = new File(pluginDir, "users");
 		config = new CthFileConfiguration(pluginDir, "config");
 		scheduler = new ScheduledEvents(instance);
-		new ShopHandler(instance);
 
 		mkdirs();
 	}
@@ -64,7 +67,8 @@ public class Daemons extends JavaPlugin
 		if(!config.exists())
 		{
 			config.create();
-			config.set("MOTD", "&2A Minecraft server", "&aA Minecraft server");
+			config.set("multiple-motd", true);
+			config.set("motd", "&2A Minecraft server", "&aA Minecraft server");
 			config.set("shop-header", "&lShop");
 			config.set("swears", "poop", "pee", "darn");
 		}
@@ -73,6 +77,38 @@ public class Daemons extends JavaPlugin
 	public Commands getCommands()
 	{
 		return commands;
+	}
+	
+	public String getMOTD()
+	{
+		List<String> MOTDs = config.getList("motd");
+		if(MOTDs.isEmpty()) MOTDs.add("A Minecraft Server");
+		String MOTD = MOTDs.get(MOTDs.size() - 1);
+		if(config.getBoolean("multiple-motd"))
+			MOTD = MOTDs.get(random.nextInt(MOTDs.size()));
+		return ChatUtil.color(MOTD);
+	}
+	
+	public void addMOTD(String... MOTDs)
+	{
+		List<String> motd = config.getList("motd");
+		for(String s: MOTDs) motd.add(s);
+		config.set("motd", motd);
+		config.set("multiple-motd", true);
+	}
+	
+	public void setMOTD(List<String> MOTD)
+	{
+		config.setList("motd", MOTD);
+		config.set("multiple-motd", true);
+	}
+	
+	public void setMOTD(String MOTD)
+	{
+		List<String> motd = config.getList("motd");
+		motd.add(MOTD);
+		config.setList("motd", motd);
+		config.set("multiple-motd", false);
 	}
 	
 	public CustomItems getCustomItems()
@@ -224,6 +260,5 @@ public class Daemons extends JavaPlugin
 	@Override
 	public void onDisable()
 	{
-
 	}
 }

@@ -1,7 +1,6 @@
 package com.Akoot.daemons.events;
 
-import java.util.List;
-import java.util.Random;
+import java.net.InetAddress;
 
 import org.apache.commons.lang.math.RandomUtils;
 import org.bukkit.ChatColor;
@@ -29,6 +28,7 @@ import com.Akoot.daemons.OfflineUser;
 import com.Akoot.daemons.User;
 import com.Akoot.daemons.items.CustomItem;
 import com.Akoot.daemons.items.CustomWeapon;
+import com.Akoot.daemons.items.Rupee;
 import com.Akoot.daemons.util.ChatUtil;
 
 import mkremins.fanciful.FancyMessage;
@@ -36,13 +36,12 @@ import mkremins.fanciful.FancyMessage;
 public class EventListener implements Listener
 {
 	private Daemons plugin;
-	private Random random;
+	private InetAddress lastIP;
 
 	public EventListener(Daemons instance)
 	{
 		plugin = instance;
 		plugin.getServer().getPluginManager().registerEvents(this, plugin);
-		random = new Random();
 	}
 
 	public FancyMessage formattedMessage(User user, String message, Player recipient)
@@ -109,6 +108,7 @@ public class EventListener implements Listener
 
 	public void giveRandomKit(User user)
 	{
+		user.give(new Rupee(Rupee.Type.YELLOW).getItem());
 		ItemMeta meta;
 		ItemStack rareSword = new ItemStack(Material.IRON_SWORD);
 		rareSword.addEnchantment(Enchantment.DAMAGE_ALL, 3);
@@ -167,19 +167,23 @@ public class EventListener implements Listener
 	@EventHandler
 	public void onPlayerList(ServerListPingEvent event)
 	{
-		List<String> motd = plugin.getConfigFile().getList("MOTD");
-		event.setMotd(ChatUtil.color(motd.get(random.nextInt(motd.size() - 1))));
-		OfflineUser user = plugin.getOfflineUser(event.getAddress());
+		event.setMotd(plugin.getMOTD());
+		InetAddress IP = event.getAddress();
+		OfflineUser user = plugin.getOfflineUser(IP);
 		if(user != null)
 		{	
-			if(user.isBirthday()) event.setMotd(ChatColor.LIGHT_PURPLE + "Happy Birthday, " + ChatColor.RESET + user.getDisplayName() + ChatColor.LIGHT_PURPLE + "!");
+			if(user.isBirthday()) event.setMotd(ChatColor.LIGHT_PURPLE + "Happy Birthday!");
 			user.updateRefreshCounter();
 		}
 
-		for(User u: plugin.getOnlineUsers())
-			if(u.isModerator())
-				u.sendMessage(ChatColor.LIGHT_PURPLE + (user != null ? user.getName() : "Someone new") + " is joining");
-		plugin.log((user != null ? user.getName() : "Someone new") + " is joining");
+		if(!IP.equals(lastIP))
+		{
+			for(User u: plugin.getOnlineUsers())
+				if(u.isModerator())
+					u.sendMessage(ChatColor.LIGHT_PURPLE + (user != null ? user.getName() : "Someone new") + " is joining");
+			plugin.log((user != null ? user.getName() : "Someone new") + " is joining");
+		}
+		lastIP = IP;
 	}
 
 	@EventHandler

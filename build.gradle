@@ -7,7 +7,7 @@ buildscript {
     }
 
     dependencies {
-        classpath group: 'eu.appsatori', name: 'gradle-fatjar-plugin', version: '0.3'
+    	classpath group: 'eu.appsatori', name: 'gradle-fatjar-plugin', version: '0.3'
         classpath group: 'de.undercouch', name: 'gradle-download-task', version: '1.2'
     }
 }
@@ -42,8 +42,8 @@ dependencies {
     compile group: 'org.bukkit', name: 'craftbukkit', version: project.property("apiversion"), { ext { fatJarExclude = true } }
   }
   compile "mkremins:fanciful:0.3.5-SNAPSHOT"
-  compile files('C:/Users/Akoot/Dev/Java/lib/Akoot-Util.jar')
-  compile files('C:/Users/Akoot/Dev/Java/lib/MassiveCore.jar', 'C:/Users/Akoot/Dev/Java/lib/Factions.jar', 'C:/Users/Akoot/Dev/Java/lib/Vault.jar'), { ext { fatJarExclude = true } }
+  compile files('lib/Akoot-Util.jar')
+  compile files('lib/MassiveCore.jar', 'lib/Factions.jar', 'lib/Vault.jar'), { ext { fatJarExclude = true } }
 }
 
 processResources {

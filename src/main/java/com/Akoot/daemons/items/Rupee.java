@@ -1,15 +1,16 @@
 package com.Akoot.daemons.items;
 
 import org.bukkit.ChatColor;
-import org.bukkit.Sound;
+import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 
 import com.Akoot.daemons.User;
 
 public class Rupee extends CustomItem
 {
-	public enum Type
+	public static enum Type
 	{
 		GREEN(ChatColor.GREEN, 1),
 		BLUE(ChatColor.BLUE, 5),
@@ -31,9 +32,15 @@ public class Rupee extends CustomItem
 
 	private Type type = Type.GREEN;
 
+	public Rupee()
+	{
+		this(Type.GREEN);
+	}
+
 	public Rupee(Type type)
 	{
-		this.displayName = type.color + "" + "Rupee";
+		this.material = Material.EMERALD;
+		this.displayName = type.color + "Rupee";
 		this.type = type;
 	}
 
@@ -43,23 +50,21 @@ public class Rupee extends CustomItem
 		if(wielder.getType() == EntityType.PLAYER)
 		{
 			User user = plugin.getUser(wielder.getUniqueId());
+			Player player = (Player) wielder;
 			if(plugin.getEconomy() != null)
+			{
 				user.pay(type.value);
+				if(player.getInventory().getItemInMainHand().getType().equals(material))
+					player.getInventory().getItemInMainHand().setType(Material.AIR);
+				else if(player.getInventory().getItemInOffHand().getType().equals(material))
+					player.getInventory().getItemInOffHand().setType(Material.AIR);
+			}
+			user.sendMessage("This rupee is GENUINE, it is worth " + type.value);
 		}
 	}
 
 	@Override
 	public void onPickup(PlayerPickupItemEvent event)
 	{
-		for(Sound sound: getSoundsFor(type.value))
-		{
-			event.getPlayer().playSound(event.getPlayer().getLocation(), sound, 1.0F, 1.0F);
-		}
-	}
-
-	public Sound[] getSoundsFor(int value)
-	{
-		Sound[] sounds = {Sound.BLOCK_NOTE_PLING};
-		return sounds;
 	}
 }

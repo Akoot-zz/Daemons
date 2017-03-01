@@ -39,4 +39,9 @@ public class CustomItem
 		item.setDurability(durability);
 		return item;
 	}
+	
+	public void setWeilder(LivingEntity entity)
+	{
+		this.wielder = entity;
+	}
 }

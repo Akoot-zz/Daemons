@@ -3,6 +3,6 @@
     "uuid": "60cae1c7-b8f5-468d-b745-d298d47c6bc5",
     "name": "Akoot_",
     "level": 4,
-    "bypassesPlayerLimit": false
+    "bypassesPlayerLimit": true
   }
 ]

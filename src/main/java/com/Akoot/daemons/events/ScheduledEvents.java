@@ -27,7 +27,7 @@ public class ScheduledEvents
 			{
 				int time = user.getPlaytime();
 				user.updatePlaytime();
-				if(time == 10 || time == 720 || time == 10080)
+				if(plugin.getPermissions() != null)
 				{
 					user.sendMessage(ChatColor.LIGHT_PURPLE + "You have unlocked a new rank!");
 					user.sendMessage("Type " + ChatColor.LIGHT_PURPLE + "/playtime" + ChatColor.WHITE + " to redeem it");

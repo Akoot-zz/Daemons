@@ -38,6 +38,7 @@ public class Commands implements CommandExecutor
 		commands.add(new CommandProfile());
 		commands.add(new CommandRedeem());
 		commands.add(new CommandShutdown());
+		commands.add(new CommandAddMOTD());
 
 		for(Command cmd: commands)
 			plugin.getCommand(cmd.getName()).setExecutor(this);
