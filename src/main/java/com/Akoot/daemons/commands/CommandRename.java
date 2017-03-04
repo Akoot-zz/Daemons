@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import com.Akoot.daemons.util.ChatUtil;
+import com.Akoot.util.StringUtil;
 
 public class CommandRename extends Command
 {
@@ -28,7 +29,7 @@ public class CommandRename extends Command
 				Player player = user.getPlayer();
 				if((player.getInventory().getItemInMainHand() != null) && (player.getInventory().getItemInMainHand().getType() != Material.AIR))
 				{
-					String newName = ChatColor.RESET + ChatUtil.color(ChatUtil.toString(args));
+					String newName = ChatColor.RESET + ChatUtil.color(StringUtil.toString(args));
 					ItemMeta meta = player.getInventory().getItemInMainHand().getItemMeta();
 					meta.setDisplayName(newName);
 					player.getInventory().getItemInMainHand().setItemMeta(meta);

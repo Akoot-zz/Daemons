@@ -20,7 +20,7 @@ public class CommandRedeem extends Command
 			Player player = (Player)sender;
 			if(args.length == 0)
 			{
-				sendUsage("-<type> <prize>c");
+				sendUsage("-<type> <prize>");
 			}
 			else if(args.length == 1)
 			{
@@ -32,7 +32,7 @@ public class CommandRedeem extends Command
 					}
 					else
 					{
-						sendError("-g is not a valid tag because it lacks a permissions plugin");
+						sendError("-g is not a valid tag because the server lacks a permissions plugin");
 					}
 				}
 			}

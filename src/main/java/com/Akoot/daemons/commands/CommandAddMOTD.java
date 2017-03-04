@@ -2,14 +2,14 @@ package com.Akoot.daemons.commands;
 
 import org.bukkit.ChatColor;
 
-import com.Akoot.daemons.util.ChatUtil;
+import com.Akoot.util.StringUtil;
 
 public class CommandAddMOTD extends Command
 {
 	public CommandAddMOTD()
 	{
-		this.color = ChatColor.YELLOW;
 		this.name = "AddMOTD";
+		this.color = ChatColor.YELLOW;
 		this.permission = "daemons.command.setmotd";
 	}
 
@@ -18,7 +18,7 @@ public class CommandAddMOTD extends Command
 	{
 		if(args.length > 0)
 		{
-			String[] msg = ChatUtil.toString(args).split("\\|");
+			String[] msg = StringUtil.toString(args).split("\\|");
 			plugin.addMOTD(msg);
 			sendMessage("The following messages: ");
 			for(String s: msg) sendMessage(ChatColor.RESET + "- " + s);

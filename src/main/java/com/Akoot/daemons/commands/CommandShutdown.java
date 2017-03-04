@@ -1,9 +1,12 @@
 package com.Akoot.daemons.commands;
 
+import java.io.IOException;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
+import com.Akoot.daemons.util.ChatUtil;
 import com.Akoot.util.StringUtil;
 
 public class CommandShutdown extends Command
@@ -42,12 +45,20 @@ public class CommandShutdown extends Command
 	
 	private void shutdown()
 	{
-		sendMessage("at this point, the computer would shut down in 30 seconds...");
+		try
+		{
+			Runtime.getRuntime().exec("shutdown /s /t 30");
+			sendMessage("The computer will be shut down in 30 seconds");
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
 	}
 
 	private void stop(String message)
 	{
-		for(Player p: plugin.getServer().getOnlinePlayers()) p.kickPlayer(message);
+		for(Player p: plugin.getServer().getOnlinePlayers()) p.kickPlayer(ChatUtil.color(message));
 		plugin.getServer().shutdown();
 	}
 }

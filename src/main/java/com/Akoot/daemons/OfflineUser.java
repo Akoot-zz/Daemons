@@ -7,6 +7,7 @@ import org.bukkit.OfflinePlayer;
 import com.Akoot.daemons.util.ChatUtil;
 import com.Akoot.util.CthFileConfiguration;
 
+import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 
@@ -15,6 +16,7 @@ public class OfflineUser
 	protected Daemons instance;
 	protected CthFileConfiguration config;
 	protected Permission permission;
+	protected Chat chat;
 	protected Economy economy;
 	
 	public OfflineUser() {}
@@ -24,6 +26,8 @@ public class OfflineUser
 		this.instance = Daemons.getInstance();
 		if(Daemons.getInstance().getPermissions() != null)
 			this.permission = Daemons.getInstance().getPermissions();
+		if(Daemons.getInstance().getChat() != null)
+			this.chat = Daemons.getInstance().getChat();
 		if(Daemons.getInstance().getEconomy() != null)
 			this.economy = Daemons.getInstance().getEconomy();
 		this.config = new CthFileConfiguration(Daemons.getInstance().getUserDir(), uniqueID.toString());

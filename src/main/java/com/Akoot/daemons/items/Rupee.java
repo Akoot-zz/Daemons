@@ -1,10 +1,11 @@
 package com.Akoot.daemons.items;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
-import org.bukkit.event.player.PlayerPickupItemEvent;
 
 import com.Akoot.daemons.User;
 
@@ -50,21 +51,12 @@ public class Rupee extends CustomItem
 		if(wielder.getType() == EntityType.PLAYER)
 		{
 			User user = plugin.getUser(wielder.getUniqueId());
-			Player player = (Player) wielder;
-			if(plugin.getEconomy() != null)
-			{
-				user.pay(type.value);
-				if(player.getInventory().getItemInMainHand().getType().equals(material))
-					player.getInventory().getItemInMainHand().setType(Material.AIR);
-				else if(player.getInventory().getItemInOffHand().getType().equals(material))
-					player.getInventory().getItemInOffHand().setType(Material.AIR);
-			}
-			user.sendMessage("This rupee is GENUINE, it is worth " + type.value);
+			Player player = user.getPlayer();
+			int amount = player.getInventory().getItemInMainHand().getAmount();
+			player.getInventory().setItemInMainHand(null);
+			player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1.0F, 1.5F);
+			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1.0F, 2.0F), 5L);
+			if(plugin.getEconomy() != null) user.pay(type.value * amount);
 		}
-	}
-
-	@Override
-	public void onPickup(PlayerPickupItemEvent event)
-	{
 	}
 }

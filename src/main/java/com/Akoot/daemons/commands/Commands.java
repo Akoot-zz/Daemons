@@ -9,7 +9,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.Akoot.daemons.Daemons;
-import com.Akoot.daemons.util.ChatUtil;
+import com.Akoot.util.StringUtil;
 
 public class Commands implements CommandExecutor
 {
@@ -39,6 +39,7 @@ public class Commands implements CommandExecutor
 		commands.add(new CommandRedeem());
 		commands.add(new CommandShutdown());
 		commands.add(new CommandAddMOTD());
+		commands.add(new CommandGameMode());
 
 		for(Command cmd: commands)
 			plugin.getCommand(cmd.getName()).setExecutor(this);
@@ -76,7 +77,7 @@ public class Commands implements CommandExecutor
 						return false;
 					}
 					BlockCommandSender block  = (BlockCommandSender) sender;
-					System.out.println(String.format("Command block at %s,%s,%s issued server command: /%s", block.getBlock().getX(), block.getBlock().getY(), block.getBlock().getZ(), command.name + " " + ChatUtil.toString(args)));
+					System.out.println(String.format("Command block at %s,%s,%s issued server command: /%s", block.getBlock().getX(), block.getBlock().getY(), block.getBlock().getZ(), command.name + " " + StringUtil.toString(args)));
 				}
 				else
 				{

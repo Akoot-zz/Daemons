@@ -3,6 +3,7 @@ package com.Akoot.daemons.commands;
 import org.bukkit.ChatColor;
 
 import com.Akoot.daemons.util.ChatUtil;
+import com.Akoot.util.StringUtil;
 
 import mkremins.fanciful.FancyMessage;
 
@@ -30,7 +31,7 @@ public class CommandRaw extends Command
 	{
 		if(args.length > 0)
 		{
-			plugin.getServer().broadcastMessage(ChatUtil.color(ChatUtil.toString(args)));
+			plugin.getServer().broadcastMessage(ChatUtil.color(StringUtil.toString(args)));
 //			List<CommandSender> recipients = new ArrayList<CommandSender>();
 //			for(CommandSender player: plugin.getServer().getOnlinePlayers())
 //				recipients.add(player);

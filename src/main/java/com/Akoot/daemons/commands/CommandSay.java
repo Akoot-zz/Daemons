@@ -3,6 +3,7 @@ package com.Akoot.daemons.commands;
 import org.bukkit.ChatColor;
 
 import com.Akoot.daemons.util.ChatUtil;
+import com.Akoot.util.StringUtil;
 
 public class CommandSay extends Command
 {
@@ -17,7 +18,7 @@ public class CommandSay extends Command
 	public void onCommand()
 	{
 		if(args.length > 0)
-			plugin.getServer().broadcastMessage(ChatColor.WHITE + "[" + ChatColor.LIGHT_PURPLE + "Server" + ChatColor.WHITE + "] " + ChatUtil.color(ChatUtil.toString(args)));
+			plugin.getServer().broadcastMessage(ChatColor.WHITE + "[" + ChatColor.LIGHT_PURPLE + "Server" + ChatColor.WHITE + "] " + ChatUtil.color(StringUtil.toString(args)));
 		else sendUsage("<message>");
 	}
 }

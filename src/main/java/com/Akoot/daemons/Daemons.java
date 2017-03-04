@@ -20,9 +20,11 @@ import com.Akoot.daemons.events.ScheduledEvents;
 import com.Akoot.daemons.items.CustomItems;
 import com.Akoot.daemons.util.ChatUtil;
 import com.Akoot.util.CthFileConfiguration;
+import com.earth2me.essentials.Essentials;
 import com.massivecraft.factions.Factions;
 
 import net.milkbowl.vault.Vault;
+import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 
@@ -39,7 +41,7 @@ public class Daemons extends JavaPlugin
 	private File userDir;
 	private File pluginDir;
 	private CthFileConfiguration config;
-	
+
 	public Random random;
 
 	@Override
@@ -69,7 +71,6 @@ public class Daemons extends JavaPlugin
 			config.create();
 			config.set("multiple-motd", true);
 			config.set("motd", "&2A Minecraft server", "&aA Minecraft server");
-			config.set("shop-header", "&lShop");
 			config.set("swears", "poop", "pee", "darn");
 		}
 	}
@@ -78,7 +79,7 @@ public class Daemons extends JavaPlugin
 	{
 		return commands;
 	}
-	
+
 	public String getMOTD()
 	{
 		List<String> MOTDs = config.getList("motd");
@@ -88,7 +89,7 @@ public class Daemons extends JavaPlugin
 			MOTD = MOTDs.get(random.nextInt(MOTDs.size()));
 		return ChatUtil.color(MOTD);
 	}
-	
+
 	public void addMOTD(String... MOTDs)
 	{
 		List<String> motd = config.getList("motd");
@@ -96,13 +97,13 @@ public class Daemons extends JavaPlugin
 		config.set("motd", motd);
 		config.set("multiple-motd", true);
 	}
-	
+
 	public void setMOTD(List<String> MOTD)
 	{
 		config.setList("motd", MOTD);
 		config.set("multiple-motd", true);
 	}
-	
+
 	public void setMOTD(String MOTD)
 	{
 		List<String> motd = config.getList("motd");
@@ -110,12 +111,12 @@ public class Daemons extends JavaPlugin
 		config.setList("motd", motd);
 		config.set("multiple-motd", false);
 	}
-	
+
 	public CustomItems getCustomItems()
 	{
 		return items;
 	}
-	
+
 	public ScheduledEvents getScheduler()
 	{
 		return scheduler;
@@ -255,6 +256,21 @@ public class Daemons extends JavaPlugin
 			return rsp.getProvider();
 		}
 		return null;
+	}
+
+	public Chat getChat()
+	{
+		if(getVault() != null)
+		{
+			RegisteredServiceProvider<Chat> rsp = getServer().getServicesManager().getRegistration(Chat.class);
+			return rsp.getProvider();
+		}
+		return null;
+	}
+	
+	public Essentials getEssentials()
+	{
+		return (Essentials) this.getServer().getPluginManager().getPlugin("Essentials");
 	}
 
 	@Override

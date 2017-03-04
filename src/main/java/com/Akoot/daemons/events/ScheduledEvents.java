@@ -25,18 +25,18 @@ public class ScheduledEvents
 		{
 			for(User user: plugin.getOnlineUsers())
 			{
-				int time = user.getPlaytime();
-				user.updatePlaytime();
-				if(plugin.getPermissions() != null)
+				if(plugin.getEssentials() == null || (plugin.getEssentials() != null && !plugin.getEssentials().getUser(user.getPlayer()).isAfk()))
 				{
-					user.sendMessage(ChatColor.LIGHT_PURPLE + "You have unlocked a new rank!");
-					user.sendMessage("Type " + ChatColor.LIGHT_PURPLE + "/playtime" + ChatColor.WHITE + " to redeem it");
-					if(time == 10)
-						plugin.getPermissions().playerAdd(user.getPlayer(), "deamons.command.redeem.group.member");
-					else if(time == 720)
-						plugin.getPermissions().playerAdd(user.getPlayer(), "deamons.command.redeem.redeem.group.member+");
-					else if(time == 10080)
-						plugin.getPermissions().playerAdd(user.getPlayer(), "deamons.command.redeem.redeem.group.loyalist");
+					int time = user.getPlaytime();
+					user.updatePlaytime();
+					if(plugin.getPermissions() != null)
+					{
+						if(time == 10 || time == 720 || time == 10080)
+						{
+							user.sendMessage(ChatColor.LIGHT_PURPLE + "You have unlocked a new rank!");
+							user.sendMessage("Type " + ChatColor.LIGHT_PURPLE + "/playtime" + ChatColor.WHITE + " to redeem it");
+						}
+					}
 				}
 			}
 		}

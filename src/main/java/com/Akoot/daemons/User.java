@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import com.Akoot.daemons.util.ChatUtil;
+import com.massivecraft.factions.entity.Faction;
 import com.massivecraft.factions.entity.MPlayer;
 
 public class User extends OfflineUser
@@ -55,7 +56,7 @@ public class User extends OfflineUser
 		return mplayer;
 	}
 
-	public String getFaction()
+	public String getFactionName()
 	{
 		if(mplayer != null)
 			return mplayer.getFactionName();
@@ -67,6 +68,15 @@ public class User extends OfflineUser
 		if(mplayer != null)
 			return mplayer.getRole().getPrefix();
 		else return "";
+	}
+	
+	public Faction getFaction()
+	{
+		if(mplayer != null)
+		{
+			return mplayer.getFaction();
+		}
+		else return null;
 	}
 
 	public ChatColor getRelationTo(UUID uuid)
@@ -81,6 +91,20 @@ public class User extends OfflineUser
 	{
 		if(permission != null)
 			return permission.getPrimaryGroup(player);
+		else return "";
+	}
+	
+	public String getPrefix()
+	{
+		if(chat != null)
+			return chat.getPlayerPrefix(player);
+		else return "";
+	}
+	
+	public String getSuffix()
+	{
+		if(chat != null)
+			return chat.getPlayerSuffix(player);
 		else return "";
 	}
 
@@ -98,7 +122,11 @@ public class User extends OfflineUser
 	{
 		return player.hasPermission("deamons.group.moderator") || isAdmin();
 	}
-
+	
+	public boolean isBuilder()
+	{
+		return player.hasPermission("daemons.group.builder") || isModerator();
+	}
 
 	public void setDisplayName(String newName)
 	{

@@ -2,7 +2,7 @@ package com.Akoot.daemons.commands;
 
 import org.bukkit.ChatColor;
 
-import com.Akoot.daemons.util.ChatUtil;
+import com.Akoot.util.StringUtil;
 
 public class CommandTest extends Command
 {
@@ -19,7 +19,7 @@ public class CommandTest extends Command
 		sendMessage("Wew!", "Success mate!");
 		if(user != null)
 		{
-			user.getPlayer().getInventory().addItem(plugin.getCustomItems().getCustomItem(ChatUtil.toString(args)));
+			user.getPlayer().getInventory().addItem(plugin.getCustomItems().getCustomItem(StringUtil.toString(args)));
 		}
 	}
 }

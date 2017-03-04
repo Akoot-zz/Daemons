@@ -10,7 +10,7 @@ public class CommandMake extends Command
 {
 	public CommandMake()
 	{
-		this.name = "Make";
+		this.name = "make";
 		this.color = ChatColor.GREEN;
 		this.permission = "daemons.command.make";
 	}
@@ -38,7 +38,7 @@ public class CommandMake extends Command
 					target.getPlayer().chat("/" + msg);
 				}
 				else
-					sendError("Can't make " + ChatColor.GRAY + target.getName() + " " + this.color +  args[1] + " " + ChatUtil.toString(StringUtil.substr(args, 2)).trim());
+					sendError("Can't make " + ChatColor.GRAY + target.getName() + " " + this.color +  args[1] + " " + StringUtil.toString(StringUtil.substr(args, 2)).trim());
 			}
 			else
 			{

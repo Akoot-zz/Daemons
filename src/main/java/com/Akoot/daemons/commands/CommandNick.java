@@ -5,12 +5,13 @@ import org.bukkit.entity.Player;
 
 import com.Akoot.daemons.User;
 import com.Akoot.daemons.util.ChatUtil;
+import com.Akoot.util.StringUtil;
 
 public class CommandNick extends Command
 {
 	public CommandNick()
 	{
-		this.name = "Nick";
+		this.name = "nick";
 		this.color = ChatColor.AQUA;
 		this.permission = "daemons.command.nick";
 	}
@@ -27,8 +28,8 @@ public class CommandNick extends Command
 			{
 				if(user != null)
 				{
-					String newName = ChatUtil.toString(args);
-					user.setDisplayName(ChatUtil.toString(args));
+					String newName = StringUtil.toString(args);
+					user.setDisplayName(StringUtil.toString(args));
 					sendMessage("Changed your nickname to: " + ChatColor.RESET + ChatUtil.color(newName));
 				}
 				else sendPlayerOnly();
@@ -37,7 +38,7 @@ public class CommandNick extends Command
 			{
 				if(args.length >= 2)
 				{
-					String newName = ChatUtil.toString(ChatUtil.removeFirst(args));
+					String newName = StringUtil.toString(StringUtil.removeFirst(args));
 					target.setDisplayName(newName);
 					sendMessage("Changed " + target.getName() + "'s nickname to: " + ChatColor.RESET + ChatUtil.color(newName));
 				}

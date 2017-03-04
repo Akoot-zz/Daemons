@@ -30,7 +30,12 @@ public class CustomItem
 	
 	public ItemStack getItem()
 	{
-		ItemStack item = new ItemStack(material);
+		return getItem(1);
+	}
+	
+	public ItemStack getItem(int amount)
+	{
+		ItemStack item = new ItemStack(material, amount);
 		ItemMeta meta = item.getItemMeta();
 		meta.setDisplayName(displayName);
 		meta.setLore(lore);

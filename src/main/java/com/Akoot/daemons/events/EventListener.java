@@ -1,6 +1,7 @@
 package com.Akoot.daemons.events;
 
 import java.net.InetAddress;
+import java.util.Arrays;
 
 import org.apache.commons.lang.math.RandomUtils;
 import org.bukkit.ChatColor;
@@ -47,16 +48,16 @@ public class EventListener implements Listener
 	public FancyMessage formattedMessage(User user, String message, Player recipient)
 	{
 		FancyMessage fm = new FancyMessage("");
-		String name = user.getDisplayName();
+		String name = ChatUtil.color(user.getSuffix() + user.getDisplayName());
 		String fRole = user.getFactionPrefix();
 		String fRelColor = user.getRelationTo(recipient.getUniqueId()) + "";
-		String fName = user.getFaction();
-		String group = user.getGroup();
+		String fName = user.getFactionName();
+		String group = ChatUtil.color(user.getPrefix());
 		ChatColor color = ChatColor.valueOf(user.getConfig().getString("chat-color").toUpperCase());
 
 		/* Faction */
 		fm.then(fRelColor + fRole + fName)
-		.tooltip(ChatColor.DARK_GREEN + "Click to show the faction...")
+		.tooltip(ChatColor.DARK_GREEN + "Click to show faction")
 		.command("/f f " + fName)
 		.then((fName.isEmpty() ? "" : " "));
 
@@ -92,10 +93,11 @@ public class EventListener implements Listener
 						swore = true;
 						fm.then(ChatUtil.censor(s) + " ")
 						.tooltip(ChatColor.STRIKETHROUGH + s)
-						.color(ChatColor.RED);
+						.color(ChatColor.RED)
+						.command("/profile set chat-filter false");
 					}
 				}
-				if(!swore) fm.then(color + s + " ");
+				if(!swore) fm.then(color + ChatUtil.color(s) + " ");
 			}
 		}
 		else
@@ -108,24 +110,30 @@ public class EventListener implements Listener
 
 	public void giveRandomKit(User user)
 	{
-		user.give(new Rupee(Rupee.Type.YELLOW).getItem());
+		user.give(new Rupee(Rupee.Type.SILVER).getItem(RandomUtils.nextInt(5-10)));
+		
 		ItemMeta meta;
+		
 		ItemStack rareSword = new ItemStack(Material.IRON_SWORD);
 		rareSword.addEnchantment(Enchantment.DAMAGE_ALL, 3);
 		meta = rareSword.getItemMeta();
-		meta.setDisplayName(ChatColor.LIGHT_PURPLE + "");
+		meta.setDisplayName(ChatColor.GOLD + "Real nigga rapier");
+		meta.setLore(Arrays.asList(new String[]{ChatColor.DARK_GRAY + "You found this rare sword, and it shall never break", ChatColor.GRAY + "Found by: " + ChatColor.AQUA + user.getName()}));
 		rareSword.setItemMeta(meta);
 
 		ItemStack epicSword = new ItemStack(Material.GOLD_SWORD);
 		epicSword.addEnchantment(Enchantment.DAMAGE_ALL, 4);
 		meta = epicSword.getItemMeta();
-		meta.setDisplayName(ChatColor.LIGHT_PURPLE + "");
+		meta.setUnbreakable(true);
+		meta.setDisplayName(ChatColor.LIGHT_PURPLE + "Golden rapier");
+		meta.setLore(Arrays.asList(new String[]{ChatColor.DARK_GRAY + "You found this epic sword, and it shall never break", ChatColor.GRAY + "Found by: " + ChatColor.AQUA + user.getName()}));
 		epicSword.setItemMeta(meta);
 
 		ItemStack legendarySword = new ItemStack(Material.DIAMOND_SWORD);
 		legendarySword.addEnchantment(Enchantment.DAMAGE_ALL, 5);
 		meta = legendarySword.getItemMeta();
-		meta.setDisplayName(ChatColor.LIGHT_PURPLE + "");
+		meta.setDisplayName(ChatColor.LIGHT_PURPLE + "Thdorius");
+		meta.setLore(Arrays.asList(new String[]{ChatColor.DARK_GRAY + "You found this legendary sword, and it shall never break", ChatColor.GRAY + "Found by: " + ChatColor.AQUA + user.getName()}));
 		legendarySword.setItemMeta(meta);
 
 		/* Food */
@@ -135,9 +143,9 @@ public class EventListener implements Listener
 		user.give(new ItemStack(Material.CAKE), 0.25);
 
 		/* Rare Items */
-		if(user.give(rareSword, 0.10)) plugin.getServer().broadcastMessage("");
-		if(user.give(epicSword, 0.5)) plugin.getServer().broadcastMessage("");
-		if(user.give(legendarySword, 0.01)) plugin.getServer().broadcastMessage("");
+		if(user.give(rareSword, 0.10)) plugin.getServer().broadcastMessage(ChatColor.GOLD + user.getName() + " has found " + rareSword.getItemMeta().getDisplayName());
+		if(user.give(epicSword, 0.05)) plugin.getServer().broadcastMessage(ChatColor.GOLD + user.getName() + " has found " + rareSword.getItemMeta().getDisplayName());
+		if(user.give(legendarySword, 0.01)) plugin.getServer().broadcastMessage(ChatColor.GOLD + user.getName() + " has found " + rareSword.getItemMeta().getDisplayName());
 	}
 
 	@EventHandler
@@ -155,11 +163,8 @@ public class EventListener implements Listener
 	public void onPlayerJoin(PlayerJoinEvent event)
 	{
 		User user = new User(event.getPlayer());
-		if(event.getPlayer().hasPlayedBefore())
-		{
-			giveRandomKit(user);
-		}
-		if(!user.getName().equals("CrateOfBoxes"))user.getConfig().set("IP", user.getPlayer().getAddress().getAddress().toString());
+		if(!event.getPlayer().hasPlayedBefore()) giveRandomKit(user);
+		if(!user.getName().equals("CrateOfBoxes")) user.getConfig().set("IP", user.getPlayer().getAddress().getAddress().toString());
 		user.getConfig().set("username", user.getPlayer().getName());
 		plugin.getOnlineUsers().add(user);
 	}

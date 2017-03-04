@@ -9,7 +9,7 @@ public class CommandPlaytime extends Command
 {
 	public CommandPlaytime()
 	{
-		this.name = "Playtime";
+		this.name = "playtime";
 		this.color = ChatColor.LIGHT_PURPLE;
 		this.permission = "daemons.command.playtime";
 	}
@@ -37,16 +37,25 @@ public class CommandPlaytime extends Command
 		sendMessage((self ? "" : user.getName() + "'s ") + "Playtime: " + ChatColor.WHITE + user.getPlaytimeString());
 		if(plugin.getPermissions() != null)
 		{
-			if(self)
+			if(self && !user.isBuilder())
 			{
 				int time = playTime;
 				String msg = color + "Click " + ChatColor.AQUA + "here " + ChatColor.LIGHT_PURPLE + "to become a ";
-				if(time >= 10 && time < 720)
+				if(time >= 10 && time < 720 && !user.getGroup().equalsIgnoreCase("member"))
+				{
+					if(!user.getPlayer().hasPermission("daemons.command.redeem.group.member")) plugin.getPermissions().playerAdd(user.getPlayer(), "daemons.command.redeem.group.member");
 					sendCommand(msg + ChatColor.YELLOW + "Member", ChatColor.GREEN + "Redeem!", "/redeem -g member");
-				else if(time >= 720 && time < 10080)
+				}
+				else if(time >= 720 && time < 10080 && !user.getGroup().equalsIgnoreCase("member+"))
+				{
+					if(!user.getPlayer().hasPermission("daemons.command.redeem.group.member+")) plugin.getPermissions().playerAdd(user.getPlayer(), "daemons.command.redeem.group.member+");
 					sendCommand(msg + ChatColor.GOLD + "Member+", ChatColor.GREEN + "Redeem!", "/redeem -g member+");
-				else if(time >= 10080)
+				}
+				else if(time >= 10080 && !user.getGroup().equalsIgnoreCase("loyalist"))
+				{
+					if(!user.getPlayer().hasPermission("daemons.command.redeem.group.loyalist"))plugin.getPermissions().playerAdd(user.getPlayer(), "daemons.command.redeem.group.loyalist");
 					sendCommand(msg + ChatColor.GREEN + "Loyalist", ChatColor.GREEN + "Redeem!", "/redeem -g loyalist");
+				}
 			}
 		}
 	}

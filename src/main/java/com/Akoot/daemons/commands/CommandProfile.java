@@ -1,6 +1,7 @@
 package com.Akoot.daemons.commands;
 
 import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 
 import com.Akoot.daemons.OfflineUser;
 import com.Akoot.util.StringUtil;
@@ -86,13 +87,13 @@ public class CommandProfile extends Command
 					if(args.length > index + 1)
 					{
 						String key = args[index + 1].toLowerCase();
-						if(!key.matches(FORBIDDEN_EDIT) || user.isOP())
+						if(!key.matches(FORBIDDEN_EDIT) || !(sender instanceof Player) || user.isOP())
 						{
 							String value = StringUtil.toString(StringUtil.substr(args, index + 2));
 							if(target.getConfig().listKeys().contains(key))
 							{
 								target.getConfig().set(key, value);
-								sendMessage("Successfully changed " + ChatColor.LIGHT_PURPLE + key + color + " to: " + ChatColor.WHITE + value + "!");
+								sendMessage("Changed " + ChatColor.GRAY + key + color + " to: " + ChatColor.WHITE + value);
 							}
 							else sendError("\"" + args[index + 1] + "\" is not a valid profile key.");
 						}

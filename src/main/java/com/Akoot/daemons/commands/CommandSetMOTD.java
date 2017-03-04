@@ -3,6 +3,7 @@ package com.Akoot.daemons.commands;
 import org.bukkit.ChatColor;
 
 import com.Akoot.daemons.util.ChatUtil;
+import com.Akoot.util.StringUtil;
 
 public class CommandSetMOTD extends Command
 {
@@ -29,7 +30,7 @@ public class CommandSetMOTD extends Command
 			}
 			else
 			{
-				String msg = ChatUtil.toString(args);
+				String msg = StringUtil.toString(args);
 				plugin.setMOTD(msg);
 				sendMessage("Server MOTD set to: " + ChatColor.WHITE + ChatUtil.color(msg));
 			}

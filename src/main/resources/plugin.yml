@@ -1,38 +1,38 @@
 name: Daemons
-version: @version@-@apitype@-@apiversion@
+version: @version@
 description: Daemons
 authors: [Akoot]
-website: https://google.com
+website: https://github.com/akoot/daemons
 
 main: com.Akoot.daemons.Daemons
 
 commands:
     Test:
-        description: Test command.
+        description: Test command
         aliases: [tst]
     Nick:
-        description: Set nickname.
+        description: Set nickname
         aliases: [nickname, nic]
     Make:
-        description: Make someone do something.
+        description: Make someone do something
         aliases: [mk]
-    gm:
-        description: Changed gamemode.
-        aliases: []
+    GameMode:
+        description: Changes gamemode
+        aliases: [gm]
     Playtime:
-        description: Shows playtime.
+        description: Shows playtime
         aliases: [pt, playt]
     SetLore:
-        description: Sets the lore of the item in hand.
+        description: Sets the lore of the item in hand
         aliases: [sl, lore]
     Rename:
         description: Rename item in hand
         aliases: [rn]
     SetMOTD:
-        description: Sets the MOTD of the server.
+        description: Sets the MOTD of the server
         aliases: [smotd]
     AddMOTD:
-        description: Adds to the MOTD of the server.
+        description: Adds to the MOTD of the server
         aliases: [amotd]
     Raw:
         description: Send a Raw message (No prefix)
@@ -41,11 +41,11 @@ commands:
         description: Say a message through the server
         aliases: []
     Profile:
-        description: Profile command.
+        description: Profile command
         aliases: [p, prof]
     Redeem:
-        description: Redeem command.
+        description: Redeem command
         aliases: [rd, rdeem]
     Shutdown:
-        description: Shuts down the server.
+        description: Shuts down the server
         aliases: [stop]

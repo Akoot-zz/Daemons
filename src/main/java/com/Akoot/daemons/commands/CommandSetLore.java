@@ -10,6 +10,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import com.Akoot.daemons.util.ChatUtil;
+import com.Akoot.util.StringUtil;
 
 public class CommandSetLore extends Command
 {
@@ -38,7 +39,7 @@ public class CommandSetLore extends Command
 					else
 					{
 						List<String> lore = new ArrayList<String>();
-						String msg = ChatUtil.toString(args);
+						String msg = StringUtil.toString(args);
 						for(String s: msg.split(", "))
 						{
 							lore.add(ChatUtil.color("&f" + s).trim());
