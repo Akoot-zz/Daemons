@@ -58,6 +58,11 @@ public class Daemons extends JavaPlugin
 		userDir = new File(pluginDir, "users");
 		config = new CthFileConfiguration(pluginDir, "config");
 		scheduler = new ScheduledEvents(instance);
+		
+		for(Player p: getServer().getOnlinePlayers())
+		{
+			onlineUsers.add(new User(p));
+		}
 
 		mkdirs();
 	}
@@ -276,5 +281,6 @@ public class Daemons extends JavaPlugin
 	@Override
 	public void onDisable()
 	{
+		onlineUsers = new ArrayList<User>();
 	}
 }

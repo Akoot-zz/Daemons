@@ -54,7 +54,7 @@ public class Command
 
 	protected void noPermission(String use)
 	{
-		sendMessage(ChatColor.DARK_RED + "You do not have permission to " + use);
+		sendMessage(ChatColor.DARK_RED + "You don't have permission to " + use);
 	}
 
 	protected void sendError(String error)

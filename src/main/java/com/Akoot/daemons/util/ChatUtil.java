@@ -17,7 +17,7 @@ import com.Akoot.util.StringUtil;
 
 public class ChatUtil 
 {
-	public static String[] rainbowseq = {"a","3","9","5","d","c","6","e"};
+	public static char[] rainbowseq = {'a','3','9','5','d','c','6','e'};
 	private static Random random = new Random();
 	private static Calendar cal;
 
@@ -30,6 +30,11 @@ public class ChatUtil
 			s = s.replace(toColor, rainbow(toColor.substring(2)));
 		}
 		return ChatColor.translateAlternateColorCodes('&', s);
+	}
+	
+	public static String randomRainbow()
+	{
+		return "§" + rainbowseq[random.nextInt(rainbowseq.length)];
 	}
 	
 	public static String censor(String msg)
@@ -76,7 +81,7 @@ public class ChatUtil
 
 	public static String randomColor()
 	{
-		return "&" + allColors().get(random.nextInt(allColors().size() - 1));
+		return "§" + allColors().get(random.nextInt(allColors().size() - 1));
 	}
 
 	public static List<String> allColors()

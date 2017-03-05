@@ -26,11 +26,14 @@ public class CustomItems
 		/* Weapons */
 		items.add(new FinnSword());
 		items.add(new MasterSword());
-		
+
 		/* Items */
 		for(Rupee.Type type: Rupee.Type.values())
 			items.add(new Rupee(type));
 
+		/* Armor */
+		items.add(new Uggs());
+		
 		for(CustomItem item: items)
 			item.plugin = plugin;
 	}
@@ -40,6 +43,23 @@ public class CustomItems
 		for(CustomItem i: items)
 			if(i.getItem().equals(item)) return true;
 		return false;
+	}
+
+	public List<CustomArmor> getCustomArmor(ItemStack[] items, LivingEntity wearer)
+	{
+		List<CustomArmor> customArmors = new ArrayList<CustomArmor>();
+		for(ItemStack item: items)
+		{
+			for(CustomItem i: this.items)
+			{
+				if(i.getItem().equals(item))
+				{
+					i.setWeilder(wearer);
+					customArmors.add((CustomArmor) i);
+				}
+			}
+		}
+		return customArmors;
 	}
 
 	public CustomWeapon getCustomWeapon(ItemStack item, LivingEntity weilder)

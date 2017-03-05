@@ -38,9 +38,13 @@ public class CommandNick extends Command
 			{
 				if(args.length >= 2)
 				{
-					String newName = StringUtil.toString(StringUtil.removeFirst(args));
-					target.setDisplayName(newName);
-					sendMessage("Changed " + target.getName() + "'s nickname to: " + ChatColor.RESET + ChatUtil.color(newName));
+					if(!(sender instanceof Player) || ((Player) sender).hasPermission(permission + ".others"))
+					{
+						String newName = StringUtil.toString(StringUtil.removeFirst(args));
+						target.setDisplayName(newName);
+						sendMessage("Changed " + target.getName() + "'s nickname to: " + ChatColor.RESET + ChatUtil.color(newName));
+					}
+					else noPermission("change other people's nicknames");
 				}
 				else this.sendUsage("[player] <nickname>");
 			}

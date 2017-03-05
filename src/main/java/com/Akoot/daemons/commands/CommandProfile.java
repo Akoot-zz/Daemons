@@ -1,7 +1,6 @@
 package com.Akoot.daemons.commands;
 
 import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
 
 import com.Akoot.daemons.OfflineUser;
 import com.Akoot.util.StringUtil;
@@ -10,9 +9,6 @@ import mkremins.fanciful.FancyMessage;
 
 public class CommandProfile extends Command
 {
-	private static final String FORBIDDEN_DISPLAY = "IP|list-refreshes|chat-filter";
-	private static final String FORBIDDEN_EDIT = "IP|times-joined|list-refreshes|playtime";
-
 	public CommandProfile()
 	{
 		this.name = "profile";
@@ -24,7 +20,7 @@ public class CommandProfile extends Command
 	{
 		sendMessage(u.getName() + "'s profile");
 		for(String s: u.getConfig().listKeys())
-			if(!s.matches(FORBIDDEN_DISPLAY) || user.isOP())
+			if(user == null || (user != null  && user.hasPermission(permission + ".display." + s)))
 				sendMessage(s + ": " + ChatColor.WHITE + u.getConfig().getString(s));
 	}
 
@@ -38,9 +34,13 @@ public class CommandProfile extends Command
 		}
 		else if(args.length == 1)
 		{
-			if(user != null)
+			if(plugin.getUser(args[0]) != null)
 			{
-				FancyMessage fm = new FancyMessage("(Click to edit)")
+				sendProfile(plugin.getUser(args[0]));
+			}
+			else if(user != null)
+			{
+				FancyMessage fm = new FancyMessage("Click to edit")
 						.style(ChatColor.ITALIC)
 						.then("\n")
 
@@ -56,9 +56,7 @@ public class CommandProfile extends Command
 
 						.then("Chat-Color").color(ChatColor.AQUA)
 						.tooltip(ChatColor.GRAY + "Must be full color name", "  example: GOLD", "  example: LIGHT_PURPLE", "  example: AQUA")
-						.suggest("/profile set chat-color ")
-						.then("\n")
-						;
+						.suggest("/profile set chat-color ");
 				fm.send(sender);
 			}
 			else sendPlayerOnly();
@@ -87,12 +85,17 @@ public class CommandProfile extends Command
 					if(args.length > index + 1)
 					{
 						String key = args[index + 1].toLowerCase();
-						if(!key.matches(FORBIDDEN_EDIT) || !(sender instanceof Player) || user.isOP())
+						if(user == null || (user != null && user.hasPermission(permission + ".edit." + key)))
 						{
 							String value = StringUtil.toString(StringUtil.substr(args, index + 2));
 							if(target.getConfig().listKeys().contains(key))
 							{
-								target.getConfig().set(key, value);
+								if(value.toLowerCase().matches("true|false")) target.getConfig().set(key, Boolean.valueOf(value));
+								else if(value.toLowerCase().matches("[0-9]+")) target.getConfig().set(key, Integer.valueOf(value));
+								else if(value.toLowerCase().matches("[0-9]+\\.[0-9]+")) target.getConfig().set(key, Double.valueOf(value));
+								else if(value.toLowerCase().matches("[0-9]+l")) target.getConfig().set(key, Long.valueOf(value));
+								else if(value.toLowerCase().matches("[0-9]+\\.[0-9]+f")) target.getConfig().set(key, Float.valueOf(value));
+								else target.getConfig().set(key, value);
 								sendMessage("Changed " + ChatColor.GRAY + key + color + " to: " + ChatColor.WHITE + value);
 							}
 							else sendError("\"" + args[index + 1] + "\" is not a valid profile key.");

@@ -8,6 +8,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.LeatherArmorMeta;
 
 import com.Akoot.daemons.Daemons;
 
@@ -40,6 +41,11 @@ public class CustomItem
 		meta.setDisplayName(displayName);
 		meta.setLore(lore);
 		meta.setUnbreakable(true);
+		if(this instanceof CustomArmor && ((CustomArmor) this).isLeather())
+		{
+			LeatherArmorMeta m = (LeatherArmorMeta) meta;
+			m.setColor(((CustomArmor) this).color);
+		}
 		item.setItemMeta(meta);
 		item.setDurability(durability);
 		return item;

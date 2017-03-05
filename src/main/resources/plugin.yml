@@ -49,3 +49,7 @@ commands:
     Shutdown:
         description: Shuts down the server
         aliases: [stop]
+    CommandPalette:
+        description: Shows a command palette for easy command execution
+        aliases: [cp, cpalette, palette]
+        

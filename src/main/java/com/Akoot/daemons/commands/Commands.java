@@ -40,6 +40,7 @@ public class Commands implements CommandExecutor
 		commands.add(new CommandShutdown());
 		commands.add(new CommandAddMOTD());
 		commands.add(new CommandGameMode());
+		commands.add(new CommandPalette());
 
 		for(Command cmd: commands)
 			plugin.getCommand(cmd.getName()).setExecutor(this);

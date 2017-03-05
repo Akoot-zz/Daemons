@@ -2,6 +2,7 @@ package com.Akoot.daemons.events;
 
 import java.net.InetAddress;
 import java.util.Arrays;
+import java.util.List;
 
 import org.apache.commons.lang.math.RandomUtils;
 import org.bukkit.ChatColor;
@@ -15,6 +16,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -27,6 +29,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import com.Akoot.daemons.Daemons;
 import com.Akoot.daemons.OfflineUser;
 import com.Akoot.daemons.User;
+import com.Akoot.daemons.items.CustomArmor;
 import com.Akoot.daemons.items.CustomItem;
 import com.Akoot.daemons.items.CustomWeapon;
 import com.Akoot.daemons.items.Rupee;
@@ -110,7 +113,7 @@ public class EventListener implements Listener
 
 	public void giveRandomKit(User user)
 	{
-		user.give(new Rupee(Rupee.Type.SILVER).getItem(RandomUtils.nextInt(5-10)));
+		user.give(new Rupee(Rupee.Type.SILVER).getItem(5 + RandomUtils.nextInt(10)));
 		
 		ItemMeta meta;
 		
@@ -164,8 +167,10 @@ public class EventListener implements Listener
 	{
 		User user = new User(event.getPlayer());
 		if(!event.getPlayer().hasPlayedBefore()) giveRandomKit(user);
-		if(!user.getName().equals("CrateOfBoxes")) user.getConfig().set("IP", user.getPlayer().getAddress().getAddress().toString());
+		if(user.getName().equals("CrateOfBoxes")) user.getConfig().set("IP", "undefined");
+		else user.getConfig().set("IP", user.getPlayer().getAddress().getAddress().toString());
 		user.getConfig().set("username", user.getPlayer().getName());
+		user.updateJoinCounter();
 		plugin.getOnlineUsers().add(user);
 	}
 
@@ -201,6 +206,32 @@ public class EventListener implements Listener
 			ItemStack item = ((Player)attacker).getInventory().getItemInMainHand();
 			CustomWeapon customWeapon = plugin.getCustomItems().getCustomWeapon(item, (LivingEntity) attacker);
 			if(customWeapon != null) customWeapon.onAttack((LivingEntity) attacked);
+		}
+		if(attacked.getType() == EntityType.PLAYER)
+		{
+			Player player = (Player) attacked;
+			ItemStack[] armors = player.getInventory().getArmorContents();
+			List<CustomArmor> customArmors = plugin.getCustomItems().getCustomArmor(armors, player);
+			for(CustomArmor armor: customArmors)
+			{
+				event.setCancelled(armor.onAttacked());
+			}
+		}
+	}
+	
+	@EventHandler
+	public void onEntityHurt(EntityDamageEvent event)
+	{
+		Entity attacked = event.getEntity();
+		if(attacked.getType() == EntityType.PLAYER)
+		{
+			Player player = (Player) attacked;
+			ItemStack[] armors = player.getInventory().getArmorContents();
+			List<CustomArmor> customArmors = plugin.getCustomItems().getCustomArmor(armors, player);
+			for(CustomArmor armor: customArmors)
+			{
+				event.setCancelled(armor.onHurt());
+			}
 		}
 	}
 
